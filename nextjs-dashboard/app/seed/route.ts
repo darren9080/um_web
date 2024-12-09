@@ -104,7 +104,7 @@ async function seedRevenue() {
 export async function GET() {
   return Response.json({
     message:
-      'Uncommentttt this file and remove this line. You can delete this file when you are finished.',
+      'Uncommentrrrrttt this file and remove this line. You can delete this file when you are finished.',
   });
   try {
     await client.sql`BEGIN`;
