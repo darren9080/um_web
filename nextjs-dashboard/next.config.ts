@@ -1,10 +1,6 @@
 import type { NextConfig } from 'next';
-import path from 'path';
 
 const nextConfig: NextConfig = {
-  // 모노레포 루트 경로 명시 — Vercel outputFileTracing 경고 해소
-  outputFileTracingRoot: path.join(__dirname, '../../'),
-
   images: {
     remotePatterns: [
       // 언스플래시 (플레이스홀더 이미지)
