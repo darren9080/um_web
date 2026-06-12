@@ -43,7 +43,7 @@ um_web/
 ```bash
 cd nextjs-dashboard
 pnpm dev          # 개발 서버 (Turbopack)
-pnpm build        # 프로덕션 빌드 (배포 전 항상 실행)
+NODE_ENV=production pnpm build   # 프로덕션 빌드 (배포 전 항상 실행, NODE_ENV 명시 필수)
 pnpm install      # 패키지 설치
 ```
 
@@ -66,7 +66,7 @@ NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 - Next.js 15: `params`, `searchParams`는 `Promise<>` 타입 — `await`로 언래핑
 - 결제 금액 검증은 반드시 서버에서 수행
 - `/admin/*` 경로는 middleware로 로그인 보호됨
-- 커밋 후 반드시 `pnpm build` 통과 확인
+- 커밋 후 반드시 `NODE_ENV=production pnpm build` 통과 확인 (NODE_ENV=development로 실행하면 404 prerender 에러 발생)
 
 ## 관련 에이전트 커맨드
 | 커맨드 | 역할 |
