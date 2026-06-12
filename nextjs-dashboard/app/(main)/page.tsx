@@ -14,7 +14,7 @@ import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatRelativeTime } from '@/app/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'IUSM - 사회·문화·인문·스포츠 미디어 플랫폼',
+  title: '울산매일UTV - 울산 대표 미디어 플랫폼',
 };
 
 export default function HomePage() {
