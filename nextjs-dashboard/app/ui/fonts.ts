@@ -1,8 +1,27 @@
-import { Inter, Lusitana} from 'next/font/google';
+import { Inter, Noto_Serif_KR, Noto_Sans_KR, Noto_Serif } from 'next/font/google';
 
-export const inter = Inter({subsets : ['latin']});
+export const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
-export const lusitana = Lusitana({
-    weight : ['400','700'],
-    subsets : ['latin'],
+export const notoSerifKR = Noto_Serif_KR({
+  weight: ['400', '700', '900'],
+  subsets: ['latin'],
+  variable: '--font-noto-serif',
+  display: 'swap',
+});
+
+export const notoSansKR = Noto_Sans_KR({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-noto-sans',
+  display: 'swap',
+});
+
+export const lusitana = Noto_Serif({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
 });

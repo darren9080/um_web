@@ -1,88 +1,134 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
+export type ArticleCategory =
+  | 'society'
+  | 'culture'
+  | 'humanities'
+  | 'sports'
+  | 'startup'
+  | 'business';
+
+export const CATEGORY_LABELS: Record<ArticleCategory, string> = {
+  society: '사회',
+  culture: '문화',
+  humanities: '인문학',
+  sports: '스포츠',
+  startup: '스타트업',
+  business: '비즈니스',
+};
+
+export const CATEGORY_COLORS: Record<ArticleCategory, string> = {
+  society: 'bg-red-50 text-red-700',
+  culture: 'bg-purple-50 text-purple-700',
+  humanities: 'bg-indigo-50 text-indigo-700',
+  sports: 'bg-orange-50 text-orange-700',
+  startup: 'bg-green-50 text-green-700',
+  business: 'bg-blue-50 text-blue-700',
+};
+
+export type Article = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  thumbnail: string;
+  category: ArticleCategory;
+  author: string;
+  authorAvatar?: string;
+  publishedAt: string;
+  readTime: number;
+  tags: string[];
+  featured: boolean;
+  premium: boolean;
+};
+
+export type EventStatus = 'upcoming' | 'ongoing' | 'ended';
+export type EventType =
+  | 'festival'
+  | 'marathon'
+  | 'award'
+  | 'fair'
+  | 'golf'
+  | 'academy'
+  | 'seminar'
+  | 'exhibition';
+
+export const EVENT_TYPE_LABELS: Record<EventType, string> = {
+  festival: '페스티벌',
+  marathon: '마라톤',
+  award: '시상식',
+  fair: '박람회',
+  golf: '골프대회',
+  academy: '아카데미',
+  seminar: '세미나',
+  exhibition: '전시회',
+};
+
+export type Event = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  heroImage?: string;
+  type: EventType;
+  status: EventStatus;
+  startDate: string;
+  endDate: string;
+  location: string;
+  organizer: string;
+  price: number | null;
+  maxCapacity: number | null;
+  currentRegistrations: number;
+  tags: string[];
+  featured: boolean;
+  registrationDeadline?: string;
+};
+
 export type User = {
   id: string;
   name: string;
   email: string;
-  password: string;
+  avatar?: string;
+  provider: 'google' | 'naver' | 'kakao' | 'email';
+  subscriptionTier: 'free' | 'individual' | 'corporate';
+  createdAt: string;
 };
 
-export type Customer = {
+export type Comment = {
+  id: string;
+  articleId: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  content: string;
+  createdAt: string;
+  parentId?: string;
+  likes: number;
+};
+
+export type MembershipPlan = {
   id: string;
   name: string;
+  tier: 'individual' | 'corporate';
+  price: number;
+  period: 'monthly' | 'yearly';
+  features: string[];
+  highlighted: boolean;
+};
+
+export type NewsletterSubscriber = {
+  id: string;
   email: string;
-  image_url: string;
+  name?: string;
+  subscribedAt: string;
+  active: boolean;
 };
 
-export type Invoice = {
+export type SponsorBanner = {
   id: string;
-  customer_id: string;
-  amount: number;
-  date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
-};
-
-export type Revenue = {
-  month: string;
-  revenue: number;
-};
-
-export type LatestInvoice = {
-  id: string;
-  name: string;
-  image_url: string;
-  email: string;
-  amount: string;
-};
-
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
-  amount: number;
-};
-
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type CustomersTableType = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
-};
-
-export type FormattedCustomersTable = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
-};
-
-export type CustomerField = {
-  id: string;
-  name: string;
-};
-
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
+  imageUrl: string;
+  linkUrl: string;
+  altText: string;
+  position: 'header' | 'sidebar' | 'content' | 'footer';
+  size: 'leaderboard' | 'rectangle' | 'mobile-banner';
 };
