@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
 import type { ArticleCategory } from '@/app/lib/definitions';
+import { Logo } from '@/app/ui/iusm/logo';
 
 const MAIN_NAV = [
   { label: '뉴스', href: '/news' },
@@ -43,11 +44,7 @@ export default function Header() {
       <div className="container-main">
         <div className="flex items-center justify-between h-[60px]">
           {/* 로고 */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl font-black tracking-tighter text-primary" style={{ fontFamily: 'serif' }}>
-              IUSM
-            </span>
-          </Link>
+          <Logo variant="full" color="dark" size="md" href="/" />
 
           {/* 데스크탑 네비게이션 */}
           <nav className="hidden md:flex items-center gap-6">
@@ -55,7 +52,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-body-sm font-medium text-neutral-600 hover:text-primary transition-colors duration-150"
+                className="text-body-sm font-medium text-neutral-600 hover:text-brand-charcoal transition-colors duration-150"
               >
                 {item.label}
               </Link>
@@ -67,7 +64,7 @@ export default function Header() {
             {/* 검색 */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2 rounded-full text-neutral-500 hover:text-primary hover:bg-neutral-100 transition-colors"
+              className="p-2 rounded-full text-neutral-500 hover:text-brand-charcoal hover:bg-neutral-100 transition-colors"
               aria-label="검색"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -93,7 +90,7 @@ export default function Header() {
                       className="rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-primary text-white text-caption font-bold flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-brand-charcoal text-white text-caption font-bold flex items-center justify-center">
                       {session.user?.name?.[0] ?? 'U'}
                     </div>
                   )}
@@ -101,7 +98,7 @@ export default function Header() {
                     {session.user?.name}
                   </span>
                   {isPremium && (
-                    <span className="text-caption bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+                    <span className="text-caption bg-brand-charcoal text-white px-1.5 py-0.5 rounded font-semibold">
                       {TIER_LABELS[session.user.subscriptionTier] ?? '멤버'}
                     </span>
                   )}
@@ -170,7 +167,7 @@ export default function Header() {
               <Link
                 key={item.key}
                 href={item.href}
-                className="shrink-0 px-4 h-full flex items-center text-caption font-semibold text-neutral-500 hover:text-primary border-b-2 border-transparent hover:border-primary transition-all duration-150 whitespace-nowrap"
+                className="shrink-0 px-4 h-full flex items-center text-caption font-semibold text-neutral-500 hover:text-brand-charcoal border-b-2 border-transparent hover:border-brand-charcoal transition-all duration-150 whitespace-nowrap"
               >
                 {item.label}
               </Link>
@@ -188,7 +185,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 text-body-sm font-medium text-neutral-700 hover:text-primary hover:bg-neutral-50 rounded-lg transition-colors"
+                className="px-3 py-2.5 text-body-sm font-medium text-neutral-700 hover:text-brand-charcoal hover:bg-neutral-50 rounded-lg transition-colors"
               >
                 {item.label}
               </Link>
@@ -199,7 +196,7 @@ export default function Header() {
                   <div className="px-3 py-2 text-body-sm text-neutral-500">
                     {session.user?.name}
                     {isPremium && (
-                      <span className="ml-2 text-caption bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+                      <span className="ml-2 text-caption bg-brand-charcoal text-white px-1.5 py-0.5 rounded font-semibold">
                         {TIER_LABELS[session.user.subscriptionTier] ?? '멤버'}
                       </span>
                     )}
@@ -247,7 +244,7 @@ export default function Header() {
               />
               <button
                 onClick={() => setSearchOpen(false)}
-                className="text-body-sm text-neutral-500 hover:text-primary"
+                className="text-body-sm text-neutral-500 hover:text-brand-charcoal"
               >
                 닫기
               </button>

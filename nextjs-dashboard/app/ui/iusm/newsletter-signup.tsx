@@ -23,7 +23,7 @@ export default function NewsletterSignup() {
           뉴스레터
         </p>
         <h2 className="text-heading-2 font-bold mb-3 text-balance">
-          IUSM의 중요한 소식을<br />
+          울산매일UTV의 중요한 소식을<br />
           먼저 받아보세요
         </h2>
         <p className="text-body-sm text-neutral-400 mb-8 max-w-md mx-auto">

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { signInWithProvider } from './actions';
+import { Logo } from '@/app/ui/iusm/logo';
 
 export const metadata: Metadata = {
   title: '로그인',
@@ -19,11 +20,9 @@ export default async function LoginPage({
       <div className="w-full max-w-sm">
         {/* 로고 */}
         <div className="text-center mb-10">
-          <Link href="/" className="inline-block mb-6">
-            <span className="text-4xl font-black tracking-tighter text-primary" style={{ fontFamily: 'serif' }}>
-              IUSM
-            </span>
-          </Link>
+          <div className="flex justify-center mb-6">
+            <Logo variant="full" color="dark" size="lg" href="/" />
+          </div>
           <h1 className="text-heading-2 font-bold text-neutral-900 mb-2">로그인</h1>
           <p className="text-body-sm text-neutral-500">
             소셜 계정으로 간편하게 시작하세요

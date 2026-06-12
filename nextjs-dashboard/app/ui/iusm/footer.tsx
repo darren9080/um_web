@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Logo } from '@/app/ui/iusm/logo';
 
 const FOOTER_LINKS = {
   뉴스: [
@@ -15,7 +16,7 @@ const FOOTER_LINKS = {
     { label: 'CEO 아카데미', href: '/events/ceo-academy-summer-2026' },
     { label: '청년 창업 박람회', href: '/events/youth-startup-fair-2026' },
   ],
-  IUSM: [
+  울산매일UTV: [
     { label: '소개', href: '/about' },
     { label: '편집 원칙', href: '/about#editorial' },
     { label: '광고/제휴 문의', href: '/about#contact' },
@@ -90,12 +91,12 @@ export default function Footer() {
         <div className="container-main py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* 로고 + 사업자 정보 */}
           <div>
-            <span className="text-white font-black text-xl tracking-tighter">IUSM</span>
+            <Logo variant="full" color="white" size="sm" href="/" className="mb-2" />
             <p className="text-caption mt-1">
-              (주)아이유에스엠 · 대표: 홍길동 · 사업자등록번호: 000-00-00000
+              (주)울산매일UTV · 대표: 홍길동 · 사업자등록번호: 000-00-00000
             </p>
             <p className="text-caption">
-              서울특별시 강남구 테헤란로 000 · 문의: contact@iusm.co.kr
+              울산광역시 남구 삼산로 000 · 문의: contact@um.co.kr
             </p>
           </div>
 
@@ -121,7 +122,7 @@ export default function Footer() {
       <div className="bg-neutral-950">
         <div className="container-main py-3">
           <p className="text-caption text-neutral-600 text-center">
-            © 2026 IUSM. All rights reserved. 무단 전재 및 재배포 금지.
+            © 2026 울산매일UTV. All rights reserved. 무단 전재 및 재배포 금지.
           </p>
         </div>
       </div>

@@ -16,12 +16,12 @@ export const CATEGORY_LABELS: Record<ArticleCategory, string> = {
 };
 
 export const CATEGORY_COLORS: Record<ArticleCategory, string> = {
-  society: 'bg-red-50 text-red-700',
-  culture: 'bg-purple-50 text-purple-700',
-  humanities: 'bg-indigo-50 text-indigo-700',
-  sports: 'bg-orange-50 text-orange-700',
-  startup: 'bg-green-50 text-green-700',
-  business: 'bg-blue-50 text-blue-700',
+  society:    'bg-red-50 text-red-800',
+  culture:    'bg-neutral-100 text-neutral-700',
+  humanities: 'bg-neutral-100 text-neutral-700',
+  sports:     'bg-orange-50 text-orange-800',
+  startup:    'bg-green-50 text-green-800',
+  business:   'bg-neutral-100 text-neutral-700',
 };
 
 export type Article = {

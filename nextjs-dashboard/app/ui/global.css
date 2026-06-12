@@ -4,22 +4,21 @@
 
 @layer base {
   :root {
-    --color-primary: #1a1a2e;
-    --color-primary-dark: #0f0f1a;
-    --color-primary-light: #f0f0f5;
+    /* Brand */
+    --color-brand-charcoal: #231F20;
+    --color-brand-red:      #C41230;
+    --color-brand-red-dark: #A30F28;
 
-    --color-accent-news: #C8373E;
-    --color-accent-event: #1D6FA4;
-    --color-accent-culture: #7C5CBF;
-    --color-accent-sport: #E8821A;
-    --color-accent-startup: #1BAD76;
+    /* Semantic */
+    --color-primary:        #231F20;
+    --color-primary-dark:   #3D3839;
+    --color-primary-light:  #F5F5F5;
+    --color-accent:         #C41230;
+    --color-accent-dark:    #A30F28;
 
-    --font-inter: var(--font-inter);
-    --font-noto-serif: var(--font-noto-serif);
-    --font-noto-sans: var(--font-noto-sans);
-
-    --header-height: 60px;
-    --category-nav-height: 44px;
+    /* Layout */
+    --header-height:        60px;
+    --category-nav-height:  44px;
   }
 
   html {
@@ -30,11 +29,11 @@
 
   body {
     @apply bg-neutral-50 text-neutral-900 antialiased;
-    font-family: 'Noto Sans KR', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
     word-break: keep-all;
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, h4 {
     word-break: keep-all;
     overflow-wrap: break-word;
   }
@@ -53,6 +52,7 @@
 }
 
 @layer components {
+  /* ─── Layout ─── */
   .container-main {
     @apply w-full max-w-content mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -61,34 +61,96 @@
     @apply py-12 md:py-16;
   }
 
+  .section-divider {
+    @apply border-t border-neutral-200;
+  }
+
+  /* ─── Typography ─── */
   .article-title {
-    font-family: 'Noto Serif KR', serif;
+    font-family: "Noto Serif KR", Georgia, serif;
     @apply text-heading-1 font-bold leading-tight tracking-tight text-neutral-900;
   }
 
-  .card-hover {
-    @apply transition-all duration-150 ease-smooth hover:shadow-card-hover hover:-translate-y-0.5;
+  .article-lead {
+    @apply text-body-lg text-neutral-600 leading-relaxed;
   }
 
-  .category-badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-caption font-semibold uppercase tracking-wide;
-  }
-
+  /* ─── Buttons ─── */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 bg-primary text-white text-body-sm font-semibold rounded-lg
-           transition-all duration-150 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
-  }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center px-5 py-2.5 border border-neutral-200 text-neutral-700 text-body-sm font-semibold rounded-lg
-           transition-all duration-150 hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 rounded-md
+           bg-brand-charcoal text-white text-body-sm font-semibold
+           transition-all duration-150 ease-smooth
+           hover:bg-primary-dark
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-charcoal focus-visible:ring-offset-2;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 bg-accent-news text-white text-body-sm font-semibold rounded-lg
-           transition-all duration-150 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent-news focus:ring-offset-2;
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 rounded-md
+           bg-accent text-white text-body-sm font-semibold
+           transition-all duration-150 ease-smooth
+           hover:bg-accent-dark
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2;
   }
 
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 rounded-md
+           border border-neutral-200 text-neutral-700 bg-white text-body-sm font-semibold
+           transition-all duration-150 ease-smooth
+           hover:border-brand-charcoal hover:text-brand-charcoal
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-charcoal focus-visible:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           px-4 py-2 rounded-md
+           text-neutral-600 text-body-sm font-medium
+           transition-all duration-150 ease-smooth
+           hover:bg-neutral-100 hover:text-neutral-900
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-300;
+  }
+
+  /* ─── Cards ─── */
+  .card-hover {
+    @apply transition-all duration-150 ease-smooth
+           hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+
+  /* ─── Category badges ─── */
+  .category-badge {
+    @apply inline-flex items-center
+           px-2 py-0.5 rounded
+           text-caption font-semibold uppercase tracking-wide;
+  }
+
+  .category-badge-society {
+    @apply category-badge bg-red-50 text-red-800;
+  }
+
+  .category-badge-culture,
+  .category-badge-humanities,
+  .category-badge-business {
+    @apply category-badge bg-neutral-100 text-neutral-700;
+  }
+
+  .category-badge-sports {
+    @apply category-badge bg-orange-50 text-orange-800;
+  }
+
+  .category-badge-startup {
+    @apply category-badge bg-green-50 text-green-800;
+  }
+
+  /* ─── Breaking ticker ─── */
+  .breaking-badge {
+    @apply inline-flex items-center px-2 py-0.5
+           bg-accent text-white text-caption font-bold
+           uppercase tracking-widest rounded-sm;
+  }
+
+  /* ─── Skeleton loading ─── */
   .skeleton {
     @apply relative overflow-hidden bg-neutral-100 rounded;
   }
@@ -100,8 +162,21 @@
     animation: shimmer 1.5s infinite;
   }
 
-  .section-divider {
-    @apply border-t border-neutral-200;
+  /* ─── Form elements ─── */
+  .input-field {
+    @apply w-full px-3 py-2.5 rounded-md
+           border border-neutral-200 bg-white
+           text-body-sm text-neutral-900
+           placeholder:text-neutral-400
+           transition-colors duration-150
+           focus:outline-none focus:border-brand-charcoal focus:ring-1 focus:ring-brand-charcoal;
+  }
+
+  /* ─── Premium/subscription gate ─── */
+  .premium-badge {
+    @apply inline-flex items-center gap-1
+           px-2 py-0.5 rounded
+           bg-brand-charcoal text-white text-caption font-semibold;
   }
 }
 
@@ -123,7 +198,7 @@
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
-/* 번호 입력 스피너 제거 */
+/* ─── Number input: remove spinners ─── */
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -134,9 +209,9 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* 기사 본문 prose 커스터마이즈 */
+/* ─── Article prose ─── */
 .article-prose {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 1.0625rem;
   line-height: 1.9;
   color: #262626;
@@ -144,7 +219,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .article-prose h2 {
-  font-family: 'Noto Serif KR', serif;
+  font-family: "Noto Serif KR", Georgia, serif;
   font-size: 1.375rem;
   font-weight: 700;
   margin-top: 2.5rem;
@@ -157,9 +232,20 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .article-prose blockquote {
-  border-left: 3px solid #C8373E;
+  border-left: 3px solid #C41230;
   padding-left: 1rem;
   margin: 1.5rem 0;
   color: #525252;
   font-style: italic;
+}
+
+.article-prose a {
+  color: #231F20;
+  text-decoration: underline;
+  text-decoration-color: #C41230;
+  text-underline-offset: 3px;
+}
+
+.article-prose a:hover {
+  color: #C41230;
 }
