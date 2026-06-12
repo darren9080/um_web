@@ -2,8 +2,10 @@ import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Naver from 'next-auth/providers/naver';
 import Kakao from 'next-auth/providers/kakao';
+import { authConfig } from './auth.config';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? '',
@@ -18,9 +20,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.KAKAO_CLIENT_SECRET ?? '',
     }),
   ],
-  session: { strategy: 'jwt' },
-  pages: { signIn: '/login' },
   callbacks: {
+    ...authConfig.callbacks,
     jwt({ token, user, account }) {
       if (user) {
         token.provider = account?.provider;

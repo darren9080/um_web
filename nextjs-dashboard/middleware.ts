@@ -1,18 +1,8 @@
-import { auth } from '@/auth';
-import { NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isAuthenticated = !!req.auth;
-
-  if (!isAuthenticated) {
-    const loginUrl = new URL('/login', nextUrl);
-    loginUrl.searchParams.set('callbackUrl', nextUrl.pathname + nextUrl.search);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return NextResponse.next();
-});
+// auth.config만 사용 — 프로바이더 없는 Edge Runtime 호환 설정
+export default NextAuth(authConfig).auth;
 
 export const config = {
   matcher: ['/membership/checkout/:path*'],
