@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
 import type { ArticleCategory } from '@/app/lib/definitions';
 
@@ -21,9 +23,19 @@ const CATEGORY_NAV: { label: string; href: string; key: ArticleCategory }[] = [
   { label: CATEGORY_LABELS.business, href: '/news?category=business', key: 'business' },
 ];
 
+const TIER_LABELS: Record<string, string> = {
+  individual: '개인 멤버',
+  corporate: '기업 멤버',
+};
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+
+  const isLoggedIn = status === 'authenticated';
+  const isPremium = isLoggedIn && session?.user?.subscriptionTier !== 'free';
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-header">
@@ -63,13 +75,72 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* 로그인 */}
-            <Link href="/login" className="hidden sm:block btn-outline text-xs py-1.5 px-4">
-              로그인
-            </Link>
-            <Link href="/membership" className="btn-accent text-xs py-1.5 px-4">
-              구독하기
-            </Link>
+            {/* 로그인 상태별 UI */}
+            {status === 'loading' ? (
+              <div className="w-20 h-8 bg-neutral-100 rounded-lg animate-pulse" />
+            ) : isLoggedIn ? (
+              <div className="relative hidden sm:block">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-neutral-100 transition-colors"
+                >
+                  {session.user?.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.name ?? ''}
+                      width={28}
+                      height={28}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-primary text-white text-caption font-bold flex items-center justify-center">
+                      {session.user?.name?.[0] ?? 'U'}
+                    </div>
+                  )}
+                  <span className="text-body-sm font-medium text-neutral-700 max-w-[80px] truncate">
+                    {session.user?.name}
+                  </span>
+                  {isPremium && (
+                    <span className="text-caption bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+                      {TIER_LABELS[session.user.subscriptionTier] ?? '멤버'}
+                    </span>
+                  )}
+                </button>
+
+                {/* 드롭다운 */}
+                {userMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} />
+                    <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-neutral-200 rounded-xl shadow-card py-1 z-20">
+                      {!isPremium && (
+                        <Link
+                          href="/membership"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="block px-4 py-2.5 text-body-sm font-semibold text-primary hover:bg-neutral-50"
+                        >
+                          멤버십 업그레이드
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: '/' }); }}
+                        className="w-full text-left px-4 py-2.5 text-body-sm text-neutral-600 hover:bg-neutral-50"
+                      >
+                        로그아웃
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/login" className="hidden sm:block btn-outline text-xs py-1.5 px-4">
+                  로그인
+                </Link>
+                <Link href="/membership" className="btn-accent text-xs py-1.5 px-4">
+                  구독하기
+                </Link>
+              </>
+            )}
 
             {/* 모바일 햄버거 */}
             <button
@@ -123,9 +194,32 @@ export default function Header() {
               </Link>
             ))}
             <div className="mt-3 pt-3 border-t border-neutral-100">
-              <Link href="/login" className="block px-3 py-2.5 text-body-sm font-medium text-neutral-700 hover:bg-neutral-50 rounded-lg">
-                로그인
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="px-3 py-2 text-body-sm text-neutral-500">
+                    {session.user?.name}
+                    {isPremium && (
+                      <span className="ml-2 text-caption bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+                        {TIER_LABELS[session.user.subscriptionTier] ?? '멤버'}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: '/' }); }}
+                    className="block w-full text-left px-3 py-2.5 text-body-sm font-medium text-neutral-700 hover:bg-neutral-50 rounded-lg"
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2.5 text-body-sm font-medium text-neutral-700 hover:bg-neutral-50 rounded-lg"
+                >
+                  로그인
+                </Link>
+              )}
             </div>
           </nav>
         </div>

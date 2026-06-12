@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PLACEHOLDER_MEMBERSHIP_PLANS } from '@/app/lib/placeholder-data';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: '멤버십',
   description: 'IUSM 개인 구독 및 기업 멤버십 플랜을 확인하세요.',
 };
 
-export default function MembershipPage() {
+export default async function MembershipPage() {
+  const session = await auth();
   const individualPlans = PLACEHOLDER_MEMBERSHIP_PLANS.filter((p) => p.tier === 'individual');
   const corporatePlans = PLACEHOLDER_MEMBERSHIP_PLANS.filter((p) => p.tier === 'corporate');
 
@@ -76,15 +78,26 @@ export default function MembershipPage() {
                 ))}
               </ul>
 
-              <button
-                className={`w-full py-3 rounded-xl text-body-sm font-bold transition-colors ${
-                  plan.highlighted
+              <Link
+                href={
+                  session?.user?.subscriptionTier !== 'free'
+                    ? '#'
+                    : `/membership/checkout?planId=${plan.id}`
+                }
+                className={`block w-full py-3 rounded-xl text-body-sm font-bold text-center transition-colors ${
+                  session?.user?.subscriptionTier !== 'free'
+                    ? 'border border-neutral-200 text-neutral-400 cursor-default'
+                    : plan.highlighted
                     ? 'bg-primary text-white hover:bg-primary-dark'
                     : 'border border-neutral-200 text-neutral-700 hover:border-primary hover:text-primary'
                 }`}
               >
-                {plan.highlighted ? '지금 시작하기' : '구독하기'}
-              </button>
+                {session?.user?.subscriptionTier !== 'free'
+                  ? '현재 구독 중'
+                  : plan.highlighted
+                  ? '지금 시작하기'
+                  : '구독하기'}
+              </Link>
             </div>
           ))}
         </div>
@@ -131,9 +144,12 @@ export default function MembershipPage() {
                 ))}
               </ul>
 
-              <button className="w-full py-3.5 bg-white text-primary font-bold text-body-sm rounded-xl hover:bg-neutral-100 transition-colors">
+              <Link
+                href="/about#contact"
+                className="block w-full py-3.5 bg-white text-primary font-bold text-body-sm rounded-xl hover:bg-neutral-100 transition-colors text-center"
+              >
                 기업 멤버십 문의하기
-              </button>
+              </Link>
             </div>
           ))}
         </div>

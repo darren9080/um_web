@@ -1,5 +1,6 @@
 import '@/app/ui/global.css';
 import { inter, notoSerifKR, notoSansKR } from '@/app/ui/fonts';
+import { Providers } from '@/app/providers';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -36,7 +37,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={`${inter.variable} ${notoSerifKR.variable} ${notoSansKR.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
