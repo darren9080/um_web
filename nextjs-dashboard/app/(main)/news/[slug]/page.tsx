@@ -2,10 +2,22 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import sanitizeHtml from 'sanitize-html';
 import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import ArticleCard from '@/app/ui/iusm/article-card';
+
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'figure', 'figcaption', 'iframe']),
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    img: ['src', 'alt', 'width', 'height', 'loading'],
+    iframe: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
+    '*': ['class', 'id'],
+  },
+  allowedIframeHostnames: ['www.youtube.com', 'player.vimeo.com'],
+};
 
 type Params = Promise<{ slug: string }>;
 
@@ -133,7 +145,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
           {/* 본문 */}
           <div
             className="article-prose"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content, SANITIZE_OPTIONS) }}
           />
 
           {/* 태그 */}
