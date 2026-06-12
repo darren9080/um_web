@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd nextjs-dashboard && pnpm *)",
+      "Bash(cd nextjs-dashboard && git *)",
+      "Bash(git *)",
+      "Bash(pnpm *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(echo *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(drop table *)",
+      "Bash(DELETE FROM *)"
+    ]
+  },
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
