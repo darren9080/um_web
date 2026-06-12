@@ -3,11 +3,11 @@ import { Logo } from '@/app/ui/iusm/logo';
 
 const FOOTER_LINKS = {
   뉴스: [
-    { label: '사회', href: '/news?category=society' },
+    { label: '사회·정치', href: '/news?category=society' },
     { label: '문화', href: '/news?category=culture' },
     { label: '인문학', href: '/news?category=humanities' },
     { label: '스포츠', href: '/news?category=sports' },
-    { label: '스타트업', href: '/news?category=startup' },
+    { label: '스타트업·경제', href: '/news?category=startup' },
   ],
   이벤트: [
     { label: '전체 이벤트', href: '/events' },
@@ -16,19 +16,37 @@ const FOOTER_LINKS = {
     { label: 'CEO 아카데미', href: '/events/ceo-academy-summer-2026' },
     { label: '청년 창업 박람회', href: '/events/youth-startup-fair-2026' },
   ],
-  울산매일UTV: [
-    { label: '소개', href: '/about' },
-    { label: '편집 원칙', href: '/about#editorial' },
-    { label: '광고/제휴 문의', href: '/about#contact' },
+  회사: [
+    { label: '회사 소개', href: '/about' },
+    { label: '광고 문의', href: '/advertising' },
+    { label: '언론사 윤리강령', href: '/ethics' },
+    { label: 'AI 활용 가이드라인', href: '/ai-guidelines' },
     { label: '채용', href: '/about#careers' },
   ],
-  구독: [
+  이용안내: [
     { label: '멤버십 안내', href: '/membership' },
     { label: '뉴스레터 구독', href: '#newsletter' },
     { label: '이용약관', href: '/terms' },
     { label: '개인정보처리방침', href: '/privacy' },
+    { label: '청소년보호정책', href: '/youth-protection' },
   ],
 };
+
+const MEMBER_ORGS = [
+  '한국신문협회',
+  '한국기자협회',
+  '한국사진기자협회',
+  '한국ABC협회',
+  '대한민국지방신문협회',
+];
+
+const PARTNER_ORGS = [
+  '중앙일보',
+  '워싱턴포스트',
+  '블룸버그',
+  '중국 장춘일보',
+  '노컷뉴스',
+];
 
 const SOCIAL_LINKS = [
   {
@@ -63,8 +81,8 @@ const SOCIAL_LINKS = [
 export default function Footer() {
   return (
     <footer className="bg-neutral-900 text-neutral-400">
-      {/* 메인 푸터 */}
-      <div className="container-main py-12">
+      {/* 링크 네비게이션 */}
+      <div className="container-main pt-12 pb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {Object.entries(FOOTER_LINKS).map(([category, links]) => (
             <div key={category}>
@@ -86,34 +104,67 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* 구분선 */}
+      {/* 회원사 · 제휴사 */}
       <div className="border-t border-neutral-800">
-        <div className="container-main py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* 로고 + 사업자 정보 */}
+        <div className="container-main py-6">
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex-1">
+              <p className="text-caption font-semibold text-neutral-500 uppercase tracking-widest mb-3">회원사</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {MEMBER_ORGS.map((org) => (
+                  <span key={org} className="text-caption text-neutral-500">{org}</span>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="text-caption font-semibold text-neutral-500 uppercase tracking-widest mb-3">제휴사</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {PARTNER_ORGS.map((org) => (
+                  <span key={org} className="text-caption text-neutral-500">{org}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 로고 · 사업자 정보 · SNS */}
+      <div className="border-t border-neutral-800">
+        <div className="container-main py-6 flex flex-col lg:flex-row gap-6 justify-between">
           <div>
-            <Logo variant="full" color="white" size="sm" href="/" className="mb-2" />
-            <p className="text-caption mt-1">
-              (주)울산매일UTV · 대표: 홍길동 · 사업자등록번호: 000-00-00000
-            </p>
-            <p className="text-caption">
-              울산광역시 남구 삼산로 000 · 문의: contact@um.co.kr
-            </p>
+            <Logo variant="full" color="white" size="sm" href="/" className="mb-3" />
+            <div className="text-caption leading-relaxed space-y-0.5">
+              <p>울산광역시 남구 두왕로 337-1, 리더스파크 3층</p>
+              <p>대표전화 <a href="tel:052-243-1001" className="hover:text-white">052-243-1001</a> · 팩스 052-271-8790</p>
+              <p>사업자번호 620-81-14006 · 청소년보호책임자 김진영</p>
+              <p>법인명 (주)울산매일신문사 · 제호 울산매일</p>
+              <p>등록번호 울산 가 01002 / 울산 아 01104 · 등록일 1992-01-28</p>
+              <p>발행·편집인 이연희</p>
+            </div>
           </div>
 
-          {/* SNS */}
-          <div className="flex items-center gap-4">
-            {SOCIAL_LINKS.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="text-neutral-500 hover:text-white transition-colors duration-150"
-              >
-                {social.icon}
-              </a>
-            ))}
+          <div className="flex flex-col items-start lg:items-end gap-4">
+            <div className="flex items-center gap-4">
+              {SOCIAL_LINKS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="text-neutral-500 hover:text-white transition-colors duration-150"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3 text-caption">
+              <Link href="/advertising" className="hover:text-white transition-colors">광고 문의</Link>
+              <span className="text-neutral-700">·</span>
+              <Link href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
+              <span className="text-neutral-700">·</span>
+              <Link href="/ethics" className="hover:text-white transition-colors">윤리강령</Link>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +173,7 @@ export default function Footer() {
       <div className="bg-neutral-950">
         <div className="container-main py-3">
           <p className="text-caption text-neutral-600 text-center">
-            © 2026 울산매일UTV. All rights reserved. 무단 전재 및 재배포 금지.
+            © 1992–2026 울산매일UTV. All rights reserved. 무단 전재 및 재배포 금지.
           </p>
         </div>
       </div>
