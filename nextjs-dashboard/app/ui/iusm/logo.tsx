@@ -14,46 +14,56 @@ interface LogoProps {
   className?: string;
 }
 
-const SIZE_MAP: Record<LogoSize, { width: number; height: number; textSize: string; badgeSize: string }> = {
-  sm:  { width: 120, height: 28, textSize: 'text-lg',  badgeSize: 'text-[10px]' },
-  md:  { width: 160, height: 38, textSize: 'text-2xl', badgeSize: 'text-xs' },
-  lg:  { width: 210, height: 50, textSize: 'text-3xl', badgeSize: 'text-sm' },
-  xl:  { width: 280, height: 66, textSize: 'text-4xl', badgeSize: 'text-base' },
+const HEIGHT_MAP: Record<LogoSize, number> = {
+  sm: 32,
+  md: 44,
+  lg: 56,
+  xl: 72,
 };
 
 // 컬러 로고 (헤더 등 밝은 배경)
 function LogoColor({ size = 'md' }: { size?: LogoSize }) {
-  const { width, height } = SIZE_MAP[size];
+  const h = HEIGHT_MAP[size];
   return (
     <Image
       src="/logo.png"
       alt="울산매일UTV"
-      width={width}
-      height={height}
-      style={{ height, width: 'auto' }}
+      width={0}
+      height={0}
+      sizes="300px"
+      style={{ height: h, width: 'auto' }}
       priority
     />
   );
 }
 
-// 흰색 로고 (푸터 등 어두운 배경) — logo-white.png 준비 전까지 텍스트 폴백
+// 흰색 로고 (푸터 등 어두운 배경) — logo-white.png 추가 전까지 텍스트 폴백
 function LogoWhite({ size = 'md' }: { size?: LogoSize }) {
-  const { textSize, badgeSize } = SIZE_MAP[size];
-  const px = size === 'sm' ? 'px-1.5 py-0.5' : size === 'xl' ? 'px-3 py-1.5' : 'px-2 py-1';
+  const textSizeMap: Record<LogoSize, string> = {
+    sm: 'text-lg',
+    md: 'text-2xl',
+    lg: 'text-3xl',
+    xl: 'text-4xl',
+  };
+  const badgeSizeMap: Record<LogoSize, string> = {
+    sm: 'text-[10px] px-1.5 py-0.5',
+    md: 'text-xs px-2 py-1',
+    lg: 'text-sm px-2.5 py-1',
+    xl: 'text-base px-3 py-1.5',
+  };
 
   return (
     <span className="inline-flex items-center gap-1.5 select-none">
       <span
-        className={clsx('font-bold tracking-tight leading-none font-noto-sans text-white', textSize)}
+        className={clsx('font-bold tracking-tight leading-none text-white', textSizeMap[size])}
         style={{ letterSpacing: '-0.02em' }}
       >
         울산매일
       </span>
       <span
         className={clsx(
-          'inline-flex items-center justify-center',
-          'bg-brand-red text-white font-bold leading-none rounded-sm font-inter',
-          px, badgeSize,
+          'inline-flex items-center justify-center bg-brand-red text-white font-bold leading-none rounded-sm',
+          badgeSizeMap[size],
         )}
         style={{ letterSpacing: '0.05em' }}
       >
@@ -74,7 +84,7 @@ function LogoIcon({ color = 'dark', size = 'md' }: Pick<LogoProps, 'color' | 'si
   return (
     <span
       className={clsx(
-        'inline-flex items-center justify-center rounded-sm font-bold leading-none font-noto-sans select-none',
+        'inline-flex items-center justify-center rounded-sm font-bold leading-none select-none',
         sizeMap[size ?? 'md'],
         color === 'dark' ? 'bg-brand-charcoal text-white' : 'bg-white text-brand-charcoal',
       )}
@@ -88,13 +98,17 @@ export function Logo({ variant = 'full', color = 'dark', size = 'md', href, clas
   const logo = (() => {
     if (variant === 'icon') return <LogoIcon color={color} size={size} />;
     if (variant === 'utv') {
-      const { badgeSize } = SIZE_MAP[size ?? 'md'];
-      const px = size === 'sm' ? 'px-1.5 py-0.5' : size === 'xl' ? 'px-3 py-1.5' : 'px-2 py-1';
+      const badgeSizeMap: Record<LogoSize, string> = {
+        sm: 'text-[10px] px-1.5 py-0.5',
+        md: 'text-xs px-2 py-1',
+        lg: 'text-sm px-2.5 py-1',
+        xl: 'text-base px-3 py-1.5',
+      };
       return (
         <span
           className={clsx(
-            'inline-flex items-center justify-center bg-brand-red text-white font-bold leading-none rounded-sm font-inter',
-            px, badgeSize,
+            'inline-flex items-center justify-center bg-brand-red text-white font-bold leading-none rounded-sm',
+            badgeSizeMap[size ?? 'md'],
           )}
           style={{ letterSpacing: '0.05em' }}
         >
@@ -102,7 +116,6 @@ export function Logo({ variant = 'full', color = 'dark', size = 'md', href, clas
         </span>
       );
     }
-    // full variant
     return color === 'white' ? <LogoWhite size={size} /> : <LogoColor size={size} />;
   })();
 
