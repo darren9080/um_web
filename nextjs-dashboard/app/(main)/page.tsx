@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   const carouselArticles = PLACEHOLDER_ARTICLES.slice(0, 3);
   const carouselIds = new Set(carouselArticles.map((a) => a.id));
-  const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => !carouselIds.has(a.id)).slice(0, 4);
+  const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => !carouselIds.has(a.id)).slice(0, 3);
   const upcomingEvents = PLACEHOLDER_EVENTS.filter((e) => e.status === 'upcoming').slice(0, 4);
 
   return (

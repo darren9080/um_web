@@ -28,7 +28,7 @@ export default function HeroCarousel({ articles, autoPlayInterval = 5000 }: Hero
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden bg-neutral-900 h-[220px] sm:h-[260px] lg:h-[280px] shadow-card-hover"
+      className="relative rounded-2xl overflow-hidden bg-neutral-900 h-[220px] sm:h-[260px] lg:h-full shadow-card-hover"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
