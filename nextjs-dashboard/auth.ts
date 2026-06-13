@@ -3,6 +3,9 @@ import Google from 'next-auth/providers/google';
 import Naver from 'next-auth/providers/naver';
 import Kakao from 'next-auth/providers/kakao';
 import { authConfig } from './auth.config';
+import { getSupabaseAdmin } from './app/lib/supabase';
+
+const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL ?? '';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -23,10 +26,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    jwt({ token, user, account }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.provider = account?.provider;
         token.subscriptionTier = 'free';
+
+        // 첫 로그인 시 cms_profiles upsert
+        if (user.id && user.name && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+          const role = user.email === SUPER_ADMIN_EMAIL ? 'super_admin' : 'viewer';
+          await getSupabaseAdmin().from('cms_profiles').upsert(
+            { id: user.id, display_name: user.name, role },
+            { onConflict: 'id', ignoreDuplicates: true },
+          );
+          token.cmsRole = role;
+        }
       }
       return token;
     },
@@ -36,6 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         | 'free'
         | 'individual'
         | 'corporate';
+      session.user.cmsRole = (token.cmsRole ?? 'viewer') as string;
       return session;
     },
   },

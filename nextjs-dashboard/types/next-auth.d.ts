@@ -5,6 +5,7 @@ declare module 'next-auth' {
     user: {
       provider: string;
       subscriptionTier: 'free' | 'individual' | 'corporate';
+      cmsRole: string;
     } & DefaultSession['user'];
   }
 }
@@ -13,5 +14,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     provider?: string;
     subscriptionTier?: string;
+    cmsRole?: string;
   }
 }
