@@ -1,6 +1,9 @@
-import { homepageSlots } from '@/app/lib/cms/sample-data';
+import { homepageSlots as sampleSlots } from '@/app/lib/cms/sample-data';
 import { SectionHeader } from '@/app/ui/admin/section-header';
-import { ArrowsUpDownIcon, EyeIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
+import HomepageDndEditor from '@/app/ui/admin/homepage-dnd-editor';
+import { EyeIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
+import { getSupabaseAdmin } from '@/app/lib/supabase';
+import type { HomepageSlot } from '@/app/lib/cms/definitions';
 
 const sectionLabels = {
   lead: '리드',
@@ -10,7 +13,40 @@ const sectionLabels = {
   feature: '기획',
 };
 
-export default function HomepagePage() {
+async function fetchSlots(): Promise<HomepageSlot[]> {
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from('homepage_slots')
+      .select('*')
+      .order('position', { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return sampleSlots;
+    }
+
+    return data.map((row) => ({
+      id: row.id,
+      section: row.section,
+      label: row.label ?? '',
+      articleId: row.article_id ?? '',
+      articleTitle: row.article_title ?? '',
+      position: row.position,
+      isVisible: row.is_visible ?? true,
+    }));
+  } catch {
+    return sampleSlots;
+  }
+}
+
+export default async function HomepagePage() {
+  const slots = await fetchSlots();
+
+  const leadSlot = slots.find((s) => s.section === 'lead');
+  const topGridSlot = slots.find((s) => s.section === 'top_grid');
+  const latestSlot = slots.find((s) => s.section === 'latest');
+  const featureSlot = slots.find((s) => s.section === 'feature');
+
   return (
     <>
       <SectionHeader
@@ -27,29 +63,8 @@ export default function HomepagePage() {
       <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
         <section className="rounded-md border border-slate-200 bg-white p-4">
           <h2 className="font-semibold text-slate-950">배치 보드</h2>
-          <div className="mt-4 space-y-3">
-            {homepageSlots.map((slot) => (
-              <div
-                key={slot.id}
-                className="grid gap-3 rounded-md border border-slate-200 p-4 md:grid-cols-[auto_1fr_auto] md:items-center"
-              >
-                <button className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-slate-600">
-                  <ArrowsUpDownIcon className="h-5 w-5" />
-                </button>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-sky-100 px-2 py-1 text-xs font-semibold text-sky-700">
-                      {sectionLabels[slot.section]}
-                    </span>
-                    <span className="text-xs text-slate-500">위치 {slot.position}</span>
-                  </div>
-                  <p className="mt-2 font-medium text-slate-950">{slot.articleTitle}</p>
-                </div>
-                <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
-                  {slot.isVisible ? '노출' : '숨김'}
-                </span>
-              </div>
-            ))}
+          <div className="mt-4">
+            <HomepageDndEditor initialSlots={slots} />
           </div>
         </section>
 
@@ -60,22 +75,30 @@ export default function HomepagePage() {
           </div>
           <div className="mt-4 grid min-h-[460px] gap-3 rounded-md bg-slate-100 p-3">
             <div className="rounded-md bg-white p-4">
-              <p className="text-xs font-semibold text-slate-500">LEAD</p>
-              <p className="mt-2 font-semibold text-slate-950">{homepageSlots[0]?.articleTitle}</p>
+              <p className="text-xs font-semibold text-slate-500">
+                {sectionLabels.lead.toUpperCase()}
+              </p>
+              <p className="mt-2 font-semibold text-slate-950">{leadSlot?.articleTitle}</p>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="rounded-md bg-white p-4">
-                <p className="text-xs font-semibold text-slate-500">TOP GRID</p>
-                <p className="mt-2 text-sm text-slate-800">{homepageSlots[1]?.articleTitle}</p>
+                <p className="text-xs font-semibold text-slate-500">
+                  {sectionLabels.top_grid.toUpperCase()}
+                </p>
+                <p className="mt-2 text-sm text-slate-800">{topGridSlot?.articleTitle}</p>
               </div>
               <div className="rounded-md bg-white p-4">
-                <p className="text-xs font-semibold text-slate-500">LATEST</p>
-                <p className="mt-2 text-sm text-slate-800">{homepageSlots[2]?.articleTitle}</p>
+                <p className="text-xs font-semibold text-slate-500">
+                  {sectionLabels.latest.toUpperCase()}
+                </p>
+                <p className="mt-2 text-sm text-slate-800">{latestSlot?.articleTitle}</p>
               </div>
             </div>
             <div className="rounded-md bg-white p-4">
-              <p className="text-xs font-semibold text-slate-500">FEATURE</p>
-              <p className="mt-2 text-sm text-slate-800">{homepageSlots[3]?.articleTitle}</p>
+              <p className="text-xs font-semibold text-slate-500">
+                {sectionLabels.feature.toUpperCase()}
+              </p>
+              <p className="mt-2 text-sm text-slate-800">{featureSlot?.articleTitle}</p>
             </div>
           </div>
         </section>
