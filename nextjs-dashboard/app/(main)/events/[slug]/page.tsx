@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
 import { EVENT_TYPE_LABELS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
+import { SITE_URL, SITE_NAME } from '@/app/lib/site-config';
 
 type Params = Promise<{ slug: string }>;
 
@@ -12,10 +13,22 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const event = PLACEHOLDER_EVENTS.find((e) => e.slug === slug);
   if (!event) return { title: '이벤트를 찾을 수 없습니다' };
+  const canonicalUrl = `${SITE_URL}/events/${event.slug}`;
   return {
     title: event.title,
     description: event.description,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
+      title: event.title,
+      description: event.description,
+      images: [{ url: event.thumbnail, width: 1200, height: 630, alt: event.title }],
+      type: 'website',
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      locale: 'ko_KR',
+    },
+    twitter: {
+      card: 'summary_large_image',
       title: event.title,
       description: event.description,
       images: [event.thumbnail],
@@ -33,8 +46,67 @@ export default async function EventPage({ params }: { params: Params }) {
     : 0;
   const isAlmostFull = capacityPercent >= 80;
 
+  const eventSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Event',
+        '@id': `${SITE_URL}/events/${event.slug}#event`,
+        name: event.title,
+        description: event.description,
+        image: event.heroImage ?? event.thumbnail,
+        startDate: event.startDate,
+        endDate: event.endDate ?? event.startDate,
+        eventStatus:
+          event.status === 'ended'
+            ? 'https://schema.org/EventCancelled'
+            : 'https://schema.org/EventScheduled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: {
+          '@type': 'Place',
+          name: event.location,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: '울산',
+            addressCountry: 'KR',
+          },
+        },
+        organizer: {
+          '@type': 'Organization',
+          name: event.organizer,
+          url: SITE_URL,
+        },
+        offers: {
+          '@type': 'Offer',
+          price: event.price ?? 0,
+          priceCurrency: 'KRW',
+          availability:
+            event.status === 'upcoming'
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/SoldOut',
+          url: `${SITE_URL}/events/${event.slug}`,
+          ...(event.registrationDeadline ? { validThrough: event.registrationDeadline } : {}),
+        },
+        url: `${SITE_URL}/events/${event.slug}`,
+        inLanguage: 'ko-KR',
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '홈', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: '이벤트', item: `${SITE_URL}/events` },
+          { '@type': 'ListItem', position: 3, name: event.title, item: `${SITE_URL}/events/${event.slug}` },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+      />
       {/* 이벤트 히어로 */}
       <div className="relative h-64 md:h-96 bg-neutral-900 overflow-hidden">
         <Image

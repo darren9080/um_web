@@ -13,9 +13,11 @@ import {
 } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatRelativeTime } from '@/app/lib/utils';
+import { SITE_URL, SITE_NAME, ORG_NAME, ORG_PHONE, ORG_FOUNDING_YEAR } from '@/app/lib/site-config';
 
 export const metadata: Metadata = {
   title: '울산매일UTV - 울산 대표 미디어 플랫폼',
+  alternates: { canonical: SITE_URL },
 };
 
 export default function HomePage() {
@@ -24,8 +26,61 @@ export default function HomePage() {
   const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => !carouselIds.has(a.id)).slice(0, 3);
   const upcomingEvents = PLACEHOLDER_EVENTS.filter((e) => e.status === 'upcoming').slice(0, 4);
 
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': ['NewsMediaOrganization', 'Organization'],
+        '@id': `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        alternateName: ORG_NAME,
+        url: SITE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${SITE_URL}/logo.png`,
+          width: 280,
+          height: 60,
+        },
+        foundingDate: ORG_FOUNDING_YEAR,
+        description: '울산 지역 1위 미디어 플랫폼. 사회·문화·스포츠·경제 뉴스와 지역 대표 이벤트를 전달합니다.',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: '울산',
+          addressRegion: '울산광역시',
+          addressCountry: 'KR',
+        },
+        contactPoint: {
+          '@type': 'ContactPoint',
+          telephone: ORG_PHONE,
+          contactType: 'customer service',
+          availableLanguage: 'Korean',
+        },
+        sameAs: ['https://twitter.com/ulsanmaeil_utv'],
+        publishingPrinciples: `${SITE_URL}/ethics`,
+        masthead: `${SITE_URL}/about`,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: SITE_NAME,
+        publisher: { '@id': `${SITE_URL}/#organization` },
+        inLanguage: 'ko-KR',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/news?q={search_term_string}` },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
       {/* 속보 티커 */}
       <BreakingTicker items={BREAKING_NEWS} />
 

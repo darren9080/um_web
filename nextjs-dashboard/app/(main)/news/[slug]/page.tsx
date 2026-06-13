@@ -7,6 +7,7 @@ import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import ArticleCard from '@/app/ui/iusm/article-card';
+import { SITE_URL, SITE_NAME } from '@/app/lib/site-config';
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'figure', 'figcaption', 'iframe']),
@@ -25,16 +26,27 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const article = PLACEHOLDER_ARTICLES.find((a) => a.slug === slug);
   if (!article) return { title: '기사를 찾을 수 없습니다' };
+  const canonicalUrl = `${SITE_URL}/news/${article.slug}`;
   return {
     title: article.title,
     description: article.excerpt,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      images: [article.thumbnail],
+      images: [{ url: article.thumbnail, width: 1200, height: 630, alt: article.title }],
       type: 'article',
       publishedTime: article.publishedAt,
       authors: [article.author],
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      locale: 'ko_KR',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.excerpt,
+      images: [article.thumbnail],
     },
   };
 }
@@ -56,17 +68,67 @@ export default async function ArticlePage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'NewsArticle',
-            headline: article.title,
-            description: article.excerpt,
-            image: article.thumbnail,
-            datePublished: article.publishedAt,
-            author: { '@type': 'Person', name: article.author },
-            publisher: {
-              '@type': 'Organization',
-              name: 'IUSM',
-              url: 'https://iusm.co.kr',
-            },
+            '@graph': [
+              {
+                '@type': 'NewsArticle',
+                '@id': `${SITE_URL}/news/${article.slug}#article`,
+                headline: article.title,
+                description: article.excerpt,
+                image: {
+                  '@type': 'ImageObject',
+                  url: article.thumbnail,
+                  width: 1200,
+                  height: 630,
+                },
+                datePublished: article.publishedAt,
+                dateModified: article.publishedAt,
+                inLanguage: 'ko-KR',
+                articleSection: CATEGORY_LABELS[article.category],
+                keywords: article.tags.join(', '),
+                url: `${SITE_URL}/news/${article.slug}`,
+                mainEntityOfPage: `${SITE_URL}/news/${article.slug}`,
+                author: {
+                  '@type': 'Person',
+                  name: article.author,
+                  worksFor: { '@id': `${SITE_URL}/#organization` },
+                },
+                publisher: {
+                  '@type': 'NewsMediaOrganization',
+                  '@id': `${SITE_URL}/#organization`,
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                  logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+                },
+                isPartOf: {
+                  '@type': 'Periodical',
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                },
+                speakable: {
+                  '@type': 'SpeakableSpecification',
+                  cssSelector: ['h1', '.article-title', '.article-prose p:first-of-type'],
+                },
+              },
+              {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                  { '@type': 'ListItem', position: 1, name: '홈', item: SITE_URL },
+                  { '@type': 'ListItem', position: 2, name: '뉴스', item: `${SITE_URL}/news` },
+                  {
+                    '@type': 'ListItem',
+                    position: 3,
+                    name: CATEGORY_LABELS[article.category],
+                    item: `${SITE_URL}/news?category=${article.category}`,
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 4,
+                    name: article.title,
+                    item: `${SITE_URL}/news/${article.slug}`,
+                  },
+                ],
+              },
+            ],
           }),
         }}
       />
