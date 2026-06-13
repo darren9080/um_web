@@ -32,11 +32,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.subscriptionTier = 'free';
 
         // 첫 로그인 시 cms_profiles upsert
-        if (user.id && user.name && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        if (user.email && user.name && process.env.NEXT_PUBLIC_SUPABASE_URL) {
           const role = user.email === SUPER_ADMIN_EMAIL ? 'super_admin' : 'viewer';
           await getSupabaseAdmin().from('cms_profiles').upsert(
-            { id: user.id, display_name: user.name, role },
-            { onConflict: 'id', ignoreDuplicates: true },
+            { email: user.email, display_name: user.name, role },
+            { onConflict: 'email', ignoreDuplicates: true },
           );
           token.cmsRole = role;
         }
