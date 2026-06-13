@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import ArticleCard from '@/app/ui/iusm/article-card';
 import EventCard from '@/app/ui/iusm/event-card';
 import BreakingTicker from '@/app/ui/iusm/breaking-ticker';
+import HeroCarousel from '@/app/ui/iusm/hero-carousel';
 import NewsletterSignup from '@/app/ui/iusm/newsletter-signup';
 import {
   PLACEHOLDER_ARTICLES,
@@ -18,8 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const featuredArticle = PLACEHOLDER_ARTICLES.find((a) => a.featured) ?? PLACEHOLDER_ARTICLES[0];
-  const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => a.id !== featuredArticle.id).slice(0, 5);
+  const carouselArticles = PLACEHOLDER_ARTICLES.slice(0, 3);
+  const carouselIds = new Set(carouselArticles.map((a) => a.id));
+  const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => !carouselIds.has(a.id)).slice(0, 4);
   const upcomingEvents = PLACEHOLDER_EVENTS.filter((e) => e.status === 'upcoming').slice(0, 4);
 
   return (
@@ -30,47 +32,8 @@ export default function HomePage() {
       {/* 히어로 섹션 */}
       <section className="container-main pt-8 pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-news-featured gap-6">
-          {/* 메인 피처드 기사 */}
-          <Link
-            href={`/news/${featuredArticle.slug}`}
-            className="group relative rounded-2xl overflow-hidden bg-neutral-900 aspect-[16/10] lg:aspect-auto lg:min-h-[480px] block shadow-card-hover"
-          >
-            <Image
-              src={featuredArticle.thumbnail}
-              alt={featuredArticle.title}
-              fill
-              className="object-cover opacity-70 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500"
-              priority
-              sizes="(max-width: 1024px) 100vw, 65vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <span
-                className={`category-badge ${CATEGORY_COLORS[featuredArticle.category]} mb-3`}
-              >
-                {CATEGORY_LABELS[featuredArticle.category]}
-              </span>
-              <h1
-                className="text-white font-bold leading-tight text-balance"
-                style={{
-                  fontFamily: 'Noto Serif KR, serif',
-                  fontSize: 'clamp(1.25rem, 3vw, 2rem)',
-                }}
-              >
-                {featuredArticle.title}
-              </h1>
-              <p className="text-neutral-300 text-body-sm mt-2 line-clamp-2 leading-relaxed hidden sm:block">
-                {featuredArticle.excerpt}
-              </p>
-              <div className="flex items-center gap-3 mt-4 text-caption text-neutral-400">
-                <span>{featuredArticle.author}</span>
-                <span>·</span>
-                <span>{formatRelativeTime(featuredArticle.publishedAt)}</span>
-                <span>·</span>
-                <span>{featuredArticle.readTime}분 읽기</span>
-              </div>
-            </div>
-          </Link>
+          {/* 캐러셀 히어로 */}
+          <HeroCarousel articles={carouselArticles} />
 
           {/* 사이드 최신 기사 목록 */}
           <div className="flex flex-col gap-4">

@@ -6,12 +6,45 @@ import { formatDateKo, formatRelativeTime } from '@/app/lib/utils';
 
 type ArticleCardProps = {
   article: Article;
-  variant?: 'default' | 'compact' | 'featured' | 'horizontal';
+  variant?: 'default' | 'compact' | 'featured' | 'horizontal' | 'list';
 };
 
 export default function ArticleCard({ article, variant = 'default' }: ArticleCardProps) {
   const categoryLabel = CATEGORY_LABELS[article.category];
   const categoryColor = CATEGORY_COLORS[article.category];
+
+  if (variant === 'list') {
+    return (
+      <Link href={`/news/${article.slug}`} className="group flex gap-3 card-hover rounded-lg p-2 -mx-2">
+        <div className="relative w-[72px] h-12 shrink-0 rounded-md overflow-hidden bg-neutral-100">
+          <Image
+            src={article.thumbnail}
+            alt={article.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="72px"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className={`category-badge ${categoryColor}`}>{categoryLabel}</span>
+            {article.premium && (
+              <span className="text-caption font-bold text-amber-600">프리미엄</span>
+            )}
+          </div>
+          <h3 className="text-body-sm font-semibold text-neutral-900 line-clamp-1 group-hover:text-primary transition-colors leading-snug">
+            {article.title}
+          </h3>
+          <p className="text-caption text-neutral-500 line-clamp-1 mt-0.5">
+            {article.excerpt}
+          </p>
+          <p className="text-caption text-neutral-400 mt-1">
+            {article.author} · {formatRelativeTime(article.publishedAt)}
+          </p>
+        </div>
+      </Link>
+    );
+  }
 
   if (variant === 'horizontal') {
     return (

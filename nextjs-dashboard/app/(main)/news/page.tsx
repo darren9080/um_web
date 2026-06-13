@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ArticleCard from '@/app/ui/iusm/article-card';
+import NewsListView from '@/app/ui/iusm/news-list-view';
 import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
 import type { ArticleCategory } from '@/app/lib/definitions';
@@ -29,9 +29,6 @@ export default async function NewsPage({ searchParams }: { searchParams: SearchP
     !activeCategory || activeCategory === 'all'
       ? PLACEHOLDER_ARTICLES
       : PLACEHOLDER_ARTICLES.filter((a) => a.category === activeCategory);
-
-  const featured = filtered.find((a) => a.featured) ?? filtered[0];
-  const rest = filtered.filter((a) => a.id !== featured?.id);
 
   return (
     <div className="container-main py-8">
@@ -68,26 +65,7 @@ export default async function NewsPage({ searchParams }: { searchParams: SearchP
           <p className="text-body">해당 카테고리의 기사가 없습니다.</p>
         </div>
       ) : (
-        <>
-          {/* 피처드 기사 */}
-          {featured && (
-            <div className="mb-10">
-              <ArticleCard article={featured} variant="featured" />
-            </div>
-          )}
-
-          {/* 기사 그리드 */}
-          {rest.length > 0 && (
-            <div>
-              <div className="section-divider mb-8" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rest.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            </div>
-          )}
-        </>
+        <NewsListView articles={filtered} />
       )}
     </div>
   );
