@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ArrowsUpDownIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
-import { useOptimistic, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { reorderSlots, toggleSlotVisibility } from '@/app/lib/actions/homepage';
 import type { HomepageSlot } from '@/app/lib/cms/definitions';
 
@@ -145,7 +145,7 @@ interface HomepageDndEditorProps {
 }
 
 export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorProps) {
-  const [optimisticSlots, setOptimisticSlots] = useOptimistic(initialSlots);
+  const [slots, setSlots] = useState(initialSlots);
   const [, startTransition] = useTransition();
 
   const sensors = useSensors(
@@ -157,25 +157,25 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = optimisticSlots.findIndex((s) => s.id === active.id);
-    const newIndex = optimisticSlots.findIndex((s) => s.id === over.id);
-    const reordered = arrayMove(optimisticSlots, oldIndex, newIndex).map((slot, idx) => ({
+    const oldIndex = slots.findIndex((s) => s.id === active.id);
+    const newIndex = slots.findIndex((s) => s.id === over.id);
+    const reordered = arrayMove(slots, oldIndex, newIndex).map((slot, idx) => ({
       ...slot,
       position: idx + 1,
     }));
 
     startTransition(async () => {
-      setOptimisticSlots(reordered);
+      setSlots(reordered);
       await reorderSlots(reordered.map(({ id, position }) => ({ id, position })));
     });
   }
 
   function handleToggleVisibility(id: string, current: boolean) {
-    const updated = optimisticSlots.map((s) =>
+    const updated = slots.map((s) =>
       s.id === id ? { ...s, isVisible: !current } : s,
     );
     startTransition(async () => {
-      setOptimisticSlots(updated);
+      setSlots(updated);
       await toggleSlotVisibility(id, !current);
     });
   }
@@ -186,11 +186,11 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
         <h2 className="font-semibold text-slate-950 mb-4">배치 보드</h2>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
-            items={optimisticSlots.map((s) => s.id)}
+            items={slots.map((s) => s.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-3">
-              {optimisticSlots.map((slot) => (
+              {slots.map((slot) => (
                 <SortableSlot
                   key={slot.id}
                   slot={slot}
@@ -202,7 +202,7 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
         </DndContext>
       </section>
 
-      <WireframePreview slots={optimisticSlots} />
+      <WireframePreview slots={slots} />
     </div>
   );
 }
