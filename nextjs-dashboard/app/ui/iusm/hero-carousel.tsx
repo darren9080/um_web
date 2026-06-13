@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -16,6 +16,7 @@ interface HeroCarouselProps {
 export default function HeroCarousel({ articles, autoPlayInterval = 5000 }: HeroCarouselProps) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const prev = () => setCurrent((c) => (c - 1 + articles.length) % articles.length);
   const next = useCallback(() => setCurrent((c) => (c + 1) % articles.length), [articles.length]);
@@ -26,11 +27,29 @@ export default function HeroCarousel({ articles, autoPlayInterval = 5000 }: Hero
     return () => clearInterval(timer);
   }, [paused, next, autoPlayInterval, articles.length]);
 
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+    setPaused(true);
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) next();
+      else prev();
+    }
+    touchStartX.current = null;
+    setPaused(false);
+  }
+
   return (
     <div
       className="relative rounded-2xl overflow-hidden bg-neutral-900 h-[220px] sm:h-[260px] lg:h-full shadow-card-hover"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {articles.map((a, idx) => (
         <Link
