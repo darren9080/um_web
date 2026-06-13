@@ -21,9 +21,15 @@ const HEIGHT_MAP: Record<LogoSize, number> = {
   xl: 72,
 };
 
+const HEIGHT_CLASS: Record<LogoSize, string> = {
+  sm: 'h-7',
+  md: 'h-8 md:h-11',
+  lg: 'h-12 md:h-14',
+  xl: 'h-16 md:h-[72px]',
+};
+
 // 컬러 로고 (헤더 등 밝은 배경)
 function LogoColor({ size = 'md' }: { size?: LogoSize }) {
-  const h = HEIGHT_MAP[size];
   return (
     <Image
       src="/logo.png"
@@ -31,7 +37,7 @@ function LogoColor({ size = 'md' }: { size?: LogoSize }) {
       width={0}
       height={0}
       sizes="300px"
-      style={{ height: h, width: 'auto' }}
+      className={`${HEIGHT_CLASS[size]} w-auto`}
       priority
     />
   );
@@ -39,7 +45,6 @@ function LogoColor({ size = 'md' }: { size?: LogoSize }) {
 
 // 흰색 로고 (푸터 등 어두운 배경)
 function LogoWhite({ size = 'md' }: { size?: LogoSize }) {
-  const h = HEIGHT_MAP[size];
   return (
     <Image
       src="/logo-white.png"
@@ -47,7 +52,7 @@ function LogoWhite({ size = 'md' }: { size?: LogoSize }) {
       width={0}
       height={0}
       sizes="300px"
-      style={{ height: h, width: 'auto' }}
+      className={`${HEIGHT_CLASS[size]} w-auto`}
       priority
     />
   );

@@ -91,6 +91,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 배너 광고 */}
+      <div className="container-main mt-6">
+        <div className="h-24 rounded-xl bg-neutral-100 border border-dashed border-neutral-300 flex items-center justify-center">
+          <span className="text-body-sm text-neutral-400">광고 영역 (728×90)</span>
+        </div>
+      </div>
+
       {/* 최신 기사 그리드 */}
       <section className="container-main section-gap">
         <div className="flex items-center justify-between mb-6">
