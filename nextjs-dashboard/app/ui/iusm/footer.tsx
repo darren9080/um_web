@@ -132,9 +132,7 @@ export default function Footer() {
       <div className="border-t border-neutral-800">
         <div className="container-main py-6 flex flex-col lg:flex-row gap-6 justify-between">
           <div>
-            <a href="/" className="inline-block mb-3 bg-white rounded-lg px-3 py-1.5">
-              <Logo variant="full" color="dark" size="sm" />
-            </a>
+            <Logo variant="full" color="white" size="sm" href="/" className="mb-3" />
             <div className="text-caption leading-relaxed space-y-0.5">
               <p>울산광역시 남구 두왕로 337-1, 리더스파크 3층</p>
               <p>대표전화 <a href="tel:052-243-1001" className="hover:text-white">052-243-1001</a> · 팩스 052-271-8790</p>

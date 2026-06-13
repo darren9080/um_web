@@ -37,39 +37,19 @@ function LogoColor({ size = 'md' }: { size?: LogoSize }) {
   );
 }
 
-// 흰색 로고 (푸터 등 어두운 배경) — logo-white.png 추가 전까지 텍스트 폴백
+// 흰색 로고 (푸터 등 어두운 배경)
 function LogoWhite({ size = 'md' }: { size?: LogoSize }) {
-  const textSizeMap: Record<LogoSize, string> = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-3xl',
-    xl: 'text-4xl',
-  };
-  const badgeSizeMap: Record<LogoSize, string> = {
-    sm: 'text-[10px] px-1.5 py-0.5',
-    md: 'text-xs px-2 py-1',
-    lg: 'text-sm px-2.5 py-1',
-    xl: 'text-base px-3 py-1.5',
-  };
-
+  const h = HEIGHT_MAP[size];
   return (
-    <span className="inline-flex items-center gap-1.5 select-none">
-      <span
-        className={clsx('font-bold tracking-tight leading-none text-white', textSizeMap[size])}
-        style={{ letterSpacing: '-0.02em' }}
-      >
-        울산매일
-      </span>
-      <span
-        className={clsx(
-          'inline-flex items-center justify-center bg-brand-red text-white font-bold leading-none rounded-sm',
-          badgeSizeMap[size],
-        )}
-        style={{ letterSpacing: '0.05em' }}
-      >
-        UTV
-      </span>
-    </span>
+    <Image
+      src="/logo-white.png"
+      alt="울산매일UTV"
+      width={0}
+      height={0}
+      sizes="300px"
+      style={{ height: h, width: 'auto' }}
+      priority
+    />
   );
 }
 
