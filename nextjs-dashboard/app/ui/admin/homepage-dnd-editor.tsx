@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowsUpDownIcon } from '@heroicons/react/24/outline';
+import { ArrowsUpDownIcon, RectangleGroupIcon } from '@heroicons/react/24/outline';
 import { useOptimistic, useTransition } from 'react';
 import { reorderSlots, toggleSlotVisibility } from '@/app/lib/actions/homepage';
 import type { HomepageSlot } from '@/app/lib/cms/definitions';
@@ -71,9 +71,7 @@ function SortableSlot({ slot, onToggleVisibility }: SortableSlotProps) {
 
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`rounded-full px-2 py-1 text-xs font-semibold ${sectionColors[slot.section]}`}
-          >
+          <span className={`rounded-full px-2 py-1 text-xs font-semibold ${sectionColors[slot.section]}`}>
             {sectionLabels[slot.section]}
           </span>
           <span className="text-xs text-slate-500">위치 {slot.position}</span>
@@ -95,6 +93,53 @@ function SortableSlot({ slot, onToggleVisibility }: SortableSlotProps) {
   );
 }
 
+function WireframePreview({ slots }: { slots: HomepageSlot[] }) {
+  const visible = slots.filter((s) => s.isVisible);
+  const lead = visible[0];
+  const second = visible[1];
+  const third = visible[2];
+  const fourth = visible[3];
+
+  return (
+    <section className="rounded-md border border-slate-200 bg-white p-4">
+      <div className="flex items-center gap-2 mb-4">
+        <RectangleGroupIcon className="h-5 w-5 text-slate-500" />
+        <h2 className="font-semibold text-slate-950">홈 화면 미리보기</h2>
+      </div>
+      <div className="grid min-h-[460px] gap-3 rounded-md bg-slate-100 p-3">
+        <div className="rounded-md bg-white p-4">
+          <p className="text-xs font-semibold text-slate-500">
+            {lead ? sectionLabels[lead.section].toUpperCase() : 'LEAD'}
+          </p>
+          <p className="mt-2 font-semibold text-slate-950 line-clamp-2">
+            {lead?.articleTitle ?? '—'}
+          </p>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="rounded-md bg-white p-4">
+            <p className="text-xs font-semibold text-slate-500">
+              {second ? sectionLabels[second.section].toUpperCase() : '—'}
+            </p>
+            <p className="mt-2 text-sm text-slate-800 line-clamp-2">{second?.articleTitle ?? '—'}</p>
+          </div>
+          <div className="rounded-md bg-white p-4">
+            <p className="text-xs font-semibold text-slate-500">
+              {third ? sectionLabels[third.section].toUpperCase() : '—'}
+            </p>
+            <p className="mt-2 text-sm text-slate-800 line-clamp-2">{third?.articleTitle ?? '—'}</p>
+          </div>
+        </div>
+        <div className="rounded-md bg-white p-4">
+          <p className="text-xs font-semibold text-slate-500">
+            {fourth ? sectionLabels[fourth.section].toUpperCase() : '—'}
+          </p>
+          <p className="mt-2 text-sm text-slate-800 line-clamp-2">{fourth?.articleTitle ?? '—'}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 interface HomepageDndEditorProps {
   initialSlots: HomepageSlot[];
 }
@@ -105,9 +150,7 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
 
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
   function handleDragEnd(event: DragEndEvent) {
@@ -138,21 +181,28 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext
-        items={optimisticSlots.map((s) => s.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="space-y-3">
-          {optimisticSlots.map((slot) => (
-            <SortableSlot
-              key={slot.id}
-              slot={slot}
-              onToggleVisibility={handleToggleVisibility}
-            />
-          ))}
-        </div>
-      </SortableContext>
-    </DndContext>
+    <div className="grid gap-4 xl:grid-cols-2">
+      <section className="rounded-md border border-slate-200 bg-white p-4">
+        <h2 className="font-semibold text-slate-950 mb-4">배치 보드</h2>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={optimisticSlots.map((s) => s.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-3">
+              {optimisticSlots.map((slot) => (
+                <SortableSlot
+                  key={slot.id}
+                  slot={slot}
+                  onToggleVisibility={handleToggleVisibility}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      </section>
+
+      <WireframePreview slots={optimisticSlots} />
+    </div>
   );
 }
