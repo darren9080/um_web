@@ -31,7 +31,7 @@ export default function NewsListView({ articles }: NewsListViewProps) {
           <button
             key={mode}
             onClick={() => setView(mode)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-caption font-semibold transition-colors ${
+            className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors ${
               view === mode
                 ? 'bg-primary text-white'
                 : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
@@ -40,8 +40,7 @@ export default function NewsListView({ articles }: NewsListViewProps) {
             aria-label={label}
             aria-pressed={view === mode}
           >
-            <Icon className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{label}</span>
+            <Icon className="h-4 w-4" />
           </button>
         ))}
       </div>
