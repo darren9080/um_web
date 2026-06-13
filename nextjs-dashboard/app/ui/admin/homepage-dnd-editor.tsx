@@ -95,10 +95,6 @@ function SortableSlot({ slot, onToggleVisibility }: SortableSlotProps) {
 
 function WireframePreview({ slots }: { slots: HomepageSlot[] }) {
   const visible = slots.filter((s) => s.isVisible);
-  const lead = visible[0];
-  const second = visible[1];
-  const third = visible[2];
-  const fourth = visible[3];
 
   return (
     <section className="rounded-md border border-slate-200 bg-white p-4">
@@ -106,35 +102,27 @@ function WireframePreview({ slots }: { slots: HomepageSlot[] }) {
         <RectangleGroupIcon className="h-5 w-5 text-slate-500" />
         <h2 className="font-semibold text-slate-950">홈 화면 미리보기</h2>
       </div>
-      <div className="grid min-h-[460px] gap-3 rounded-md bg-slate-100 p-3">
-        <div className="rounded-md bg-white p-4">
-          <p className="text-xs font-semibold text-slate-500">
-            {lead ? sectionLabels[lead.section].toUpperCase() : 'LEAD'}
-          </p>
-          <p className="mt-2 font-semibold text-slate-950 line-clamp-2">
-            {lead?.articleTitle ?? '—'}
-          </p>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className="rounded-md bg-white p-4">
-            <p className="text-xs font-semibold text-slate-500">
-              {second ? sectionLabels[second.section].toUpperCase() : '—'}
-            </p>
-            <p className="mt-2 text-sm text-slate-800 line-clamp-2">{second?.articleTitle ?? '—'}</p>
+      <div className="flex flex-col gap-3 rounded-md bg-slate-100 p-3 min-h-[460px]">
+        {visible.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center rounded-md border border-dashed border-slate-300 bg-white p-6">
+            <p className="text-sm text-slate-400">노출된 슬롯이 없습니다</p>
           </div>
-          <div className="rounded-md bg-white p-4">
-            <p className="text-xs font-semibold text-slate-500">
-              {third ? sectionLabels[third.section].toUpperCase() : '—'}
+        ) : visible.map((slot, idx) => (
+          <div
+            key={slot.id}
+            className={`rounded-md bg-white p-4 ${idx === 0 ? 'ring-2 ring-brand-red/30' : ''}`}
+          >
+            <div className="flex items-center gap-2">
+              <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${sectionColors[slot.section]}`}>
+                {sectionLabels[slot.section]}
+              </span>
+              <span className="text-xs text-slate-400">#{idx + 1}</span>
+            </div>
+            <p className={`mt-2 line-clamp-2 text-slate-950 ${idx === 0 ? 'font-semibold' : 'text-sm'}`}>
+              {slot.articleTitle || '—'}
             </p>
-            <p className="mt-2 text-sm text-slate-800 line-clamp-2">{third?.articleTitle ?? '—'}</p>
           </div>
-        </div>
-        <div className="rounded-md bg-white p-4">
-          <p className="text-xs font-semibold text-slate-500">
-            {fourth ? sectionLabels[fourth.section].toUpperCase() : '—'}
-          </p>
-          <p className="mt-2 text-sm text-slate-800 line-clamp-2">{fourth?.articleTitle ?? '—'}</p>
-        </div>
+        ))}
       </div>
     </section>
   );
@@ -164,8 +152,8 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
       position: idx + 1,
     }));
 
+    setSlots(reordered);
     startTransition(async () => {
-      setSlots(reordered);
       await reorderSlots(reordered.map(({ id, position }) => ({ id, position })));
     });
   }
@@ -174,8 +162,8 @@ export default function HomepageDndEditor({ initialSlots }: HomepageDndEditorPro
     const updated = slots.map((s) =>
       s.id === id ? { ...s, isVisible: !current } : s,
     );
+    setSlots(updated);
     startTransition(async () => {
-      setSlots(updated);
       await toggleSlotVisibility(id, !current);
     });
   }
