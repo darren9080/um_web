@@ -12,6 +12,7 @@ const MAIN_NAV = [
   { label: '뉴스', href: '/news' },
   { label: '이벤트', href: '/events' },
   { label: '멤버십', href: '/membership' },
+  { label: '기자 소개', href: '/journalists' },
   { label: '소개', href: '/about' },
 ];
 

@@ -8,6 +8,7 @@ import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import ArticleCard from '@/app/ui/iusm/article-card';
 import { SITE_URL, SITE_NAME } from '@/app/lib/site-config';
+import { getJournalistByName } from '@/app/lib/journalists-data';
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'figure', 'figcaption', 'iframe']),
@@ -56,6 +57,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
   const article = PLACEHOLDER_ARTICLES.find((a) => a.slug === slug);
   if (!article) notFound();
 
+  const journalist = getJournalistByName(article.author);
   const related = PLACEHOLDER_ARTICLES.filter(
     (a) => a.id !== article.id && a.category === article.category,
   ).slice(0, 3);
@@ -165,15 +167,33 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
             <div className="flex items-center justify-between flex-wrap gap-4 py-4 border-y border-neutral-200">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-neutral-200 flex items-center justify-center text-body-sm font-bold text-neutral-600">
-                  {article.author[0]}
-                </div>
-                <div>
-                  <p className="text-body-sm font-semibold text-neutral-900">{article.author}</p>
-                  <p className="text-caption text-neutral-400">
-                    {formatDateKo(article.publishedAt)} · {article.readTime}분 읽기
-                  </p>
-                </div>
+                {journalist ? (
+                  <Link href={`/journalists/${journalist.slug}`} className="group flex items-center gap-3">
+                    <div className="relative w-9 h-9 rounded-full overflow-hidden bg-neutral-200 shrink-0">
+                      <Image src={journalist.photo} alt={journalist.name} fill className="object-cover object-top" sizes="36px" />
+                    </div>
+                    <div>
+                      <p className="text-body-sm font-semibold text-neutral-900 group-hover:text-primary transition-colors">
+                        {article.author}
+                      </p>
+                      <p className="text-caption text-neutral-400">
+                        {journalist.title} · {formatDateKo(article.publishedAt)} · {article.readTime}분 읽기
+                      </p>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-neutral-200 flex items-center justify-center text-body-sm font-bold text-neutral-600">
+                      {article.author[0]}
+                    </div>
+                    <div>
+                      <p className="text-body-sm font-semibold text-neutral-900">{article.author}</p>
+                      <p className="text-caption text-neutral-400">
+                        {formatDateKo(article.publishedAt)} · {article.readTime}분 읽기
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* 공유 버튼 */}
@@ -227,15 +247,34 @@ export default async function ArticlePage({ params }: { params: Params }) {
           )}
 
           {/* 저자 소개 */}
-          <div className="mt-8 pt-8 border-t border-neutral-200 flex items-center gap-4 bg-neutral-50 rounded-xl p-5">
-            <div className="w-14 h-14 rounded-full bg-neutral-200 flex items-center justify-center text-heading-4 font-bold text-neutral-600 shrink-0">
-              {article.author[0]}
+          {journalist ? (
+            <Link
+              href={`/journalists/${journalist.slug}`}
+              className="group mt-8 pt-8 border-t border-neutral-200 flex items-center gap-4 bg-neutral-50 hover:bg-neutral-100 rounded-xl p-5 transition-colors block"
+            >
+              <div className="relative w-14 h-14 rounded-full overflow-hidden bg-neutral-200 shrink-0">
+                <Image src={journalist.photo} alt={journalist.name} fill className="object-cover object-top" sizes="56px" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-neutral-900 group-hover:text-primary transition-colors">
+                  {journalist.name}
+                </p>
+                <p className="text-body-sm text-neutral-500 mt-0.5">{journalist.title}</p>
+                <p className="text-caption text-neutral-400 mt-1 line-clamp-2">{journalist.bio}</p>
+              </div>
+              <span className="text-caption font-semibold text-primary shrink-0">프로필 보기 →</span>
+            </Link>
+          ) : (
+            <div className="mt-8 pt-8 border-t border-neutral-200 flex items-center gap-4 bg-neutral-50 rounded-xl p-5">
+              <div className="w-14 h-14 rounded-full bg-neutral-200 flex items-center justify-center text-heading-4 font-bold text-neutral-600 shrink-0">
+                {article.author[0]}
+              </div>
+              <div>
+                <p className="font-semibold text-neutral-900">{article.author}</p>
+                <p className="text-body-sm text-neutral-500 mt-0.5">울산매일UTV 기자</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-neutral-900">{article.author}</p>
-              <p className="text-body-sm text-neutral-500 mt-0.5">IUSM 기자</p>
-            </div>
-          </div>
+          )}
 
           {/* 댓글 섹션 (소셜 로그인 필요) */}
           <div className="mt-12 pt-8 border-t border-neutral-200">
