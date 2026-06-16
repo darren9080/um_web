@@ -31,7 +31,28 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'phinf.pstatic.net', pathname: '/**' },
       { protocol: 'https', hostname: 'ssl.pstatic.net', pathname: '/**' },
       { protocol: 'https', hostname: 'k.kakaocdn.net', pathname: '/**' },
+      // NSP/ND소프트 CMS CDN (RSS 이미지)
+      { protocol: 'https', hostname: '*.iusm.co.kr', pathname: '/**' },
+      { protocol: 'https', hostname: '*.ulsan.co.kr', pathname: '/**' },
     ],
+  },
+  async redirects() {
+    return [
+      // NSP 구 URL 포맷 → 새 URL 301 리다이렉트
+      // e.g. /news/articleView.html?idxno=1063984 → /news/1063984
+      {
+        source: '/news/articleView.html',
+        has: [{ type: 'query', key: 'idxno', value: '(?<idxno>\\d+)' }],
+        destination: '/news/:idxno',
+        permanent: true,
+      },
+      // 구 사이트 다른 섹션 URL 패턴 (NSP 공통)
+      {
+        source: '/news/articleList.html',
+        destination: '/news',
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [
