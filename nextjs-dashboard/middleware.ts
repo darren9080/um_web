@@ -78,7 +78,8 @@ export default auth((req: AuthedRequest) => {
   // ── 메인 사이트 기존 인증 로직 ───────────────────────────────────────────
   const isCheckout = pathname.startsWith('/membership/checkout');
   const isAdmin = pathname.startsWith('/admin');
-  if ((isCheckout || isAdmin) && !isLoggedIn) {
+  const isMy = pathname.startsWith('/my');
+  if ((isCheckout || isAdmin || isMy) && !isLoggedIn) {
     const loginUrl = new URL('/login', nextUrl);
     loginUrl.searchParams.set('callbackUrl', req.url);
     return NextResponse.redirect(loginUrl);

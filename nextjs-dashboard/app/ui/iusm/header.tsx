@@ -109,7 +109,14 @@ export default function Header() {
                 {userMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} />
-                    <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-neutral-200 rounded-xl shadow-card py-1 z-20">
+                    <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-neutral-200 rounded-xl shadow-card py-1 z-20">
+                      <Link
+                        href="/my"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2.5 text-body-sm text-neutral-700 hover:bg-neutral-50"
+                      >
+                        마이페이지
+                      </Link>
                       {!isPremium && (
                         <Link
                           href="/membership"
@@ -119,6 +126,7 @@ export default function Header() {
                           멤버십 업그레이드
                         </Link>
                       )}
+                      <div className="my-1 border-t border-neutral-100" />
                       <button
                         onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                         className="w-full text-left px-4 py-2.5 text-body-sm text-neutral-600 hover:bg-neutral-50"

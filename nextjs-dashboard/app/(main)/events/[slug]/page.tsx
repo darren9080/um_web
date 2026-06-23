@@ -266,9 +266,12 @@ export default async function EventPage({ params }: { params: Params }) {
 
                 {/* CTA 버튼 */}
                 {event.status === 'upcoming' ? (
-                  <button className="w-full btn-accent py-3.5 rounded-xl text-body font-bold">
+                  <Link
+                    href={`/events/${event.slug}/register`}
+                    className="block w-full text-center btn-accent py-3.5 rounded-xl text-body font-bold"
+                  >
                     {event.price ? '유료 신청하기' : '무료 신청하기'}
-                  </button>
+                  </Link>
                 ) : (
                   <div className="w-full py-3.5 text-center text-body-sm text-neutral-400 bg-neutral-100 rounded-xl font-semibold">
                     이벤트가 종료되었습니다
