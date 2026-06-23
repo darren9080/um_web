@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
 import type { ArticleCategory } from '@/app/lib/definitions';
@@ -35,6 +36,16 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { data: session, status } = useSession();
+  const router = useRouter();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const q = searchInputRef.current?.value.trim();
+    if (!q) return;
+    setSearchOpen(false);
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  }
 
   const isLoggedIn = status === 'authenticated';
   const isPremium = isLoggedIn && session?.user?.subscriptionTier !== 'free';
@@ -241,23 +252,28 @@ export default function Header() {
             className="bg-white w-full p-4 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="container-main flex items-center gap-3">
+            <form onSubmit={handleSearchSubmit} className="container-main flex items-center gap-3">
               <svg className="w-5 h-5 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
+                ref={searchInputRef}
                 autoFocus
                 type="text"
                 placeholder="기사, 이벤트 검색..."
                 className="flex-1 border-none outline-none text-body text-neutral-900 placeholder-neutral-400"
               />
+              <button type="submit" className="text-body-sm font-semibold text-brand-charcoal hover:text-primary px-2">
+                검색
+              </button>
               <button
+                type="button"
                 onClick={() => setSearchOpen(false)}
                 className="text-body-sm text-neutral-500 hover:text-brand-charcoal"
               >
                 닫기
               </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
