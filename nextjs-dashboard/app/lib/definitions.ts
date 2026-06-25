@@ -132,3 +132,84 @@ export type SponsorBanner = {
   position: 'header' | 'sidebar' | 'content' | 'footer';
   size: 'leaderboard' | 'rectangle' | 'mobile-banner';
 };
+
+// ─── Knowledge DB ────────────────────────────────────────────────────────────
+
+export type DatasetDomain =
+  | 'population'
+  | 'industry'
+  | 'realestate'
+  | 'traffic'
+  | 'environment'
+  | 'living';
+
+export const DATASET_DOMAIN_LABELS: Record<DatasetDomain, string> = {
+  population:  '인구',
+  industry:    '산업·고용',
+  realestate:  '부동산',
+  traffic:     '교통',
+  environment: '환경',
+  living:      '생활',
+};
+
+export const DATASET_DOMAIN_COLORS: Record<DatasetDomain, string> = {
+  population:  'bg-blue-50 text-blue-800',
+  industry:    'bg-orange-50 text-orange-800',
+  realestate:  'bg-yellow-50 text-yellow-800',
+  traffic:     'bg-purple-50 text-purple-800',
+  environment: 'bg-green-50 text-green-800',
+  living:      'bg-neutral-100 text-neutral-700',
+};
+
+export type DatasetPoint = {
+  period: string;  // 'YYYY-MM' | 'YYYY-QN' | 'YYYY'
+  value: number;
+  isProvisional?: boolean;
+};
+
+export type Dataset = {
+  slug: string;
+  name: string;
+  domain: DatasetDomain;
+  sourceName: string;
+  sourceUrl: string;
+  methodNote: string;
+  unit: string;
+  updateCycle: 'monthly' | 'quarterly' | 'yearly' | 'daily';
+  referenceDate: string;
+  isProvisional: boolean;
+  description: string;
+  points: DatasetPoint[];
+  relatedArticleSlugs: string[];
+  relatedTopicSlugs: string[];
+};
+
+export type Topic = {
+  slug: string;
+  title: string;
+  summary: string;
+  status: 'active' | 'archived';
+  heroDatasetSlug?: string;
+  relatedArticleSlugs: string[];
+  relatedDatasetSlugs: string[];
+  createdAt: string;
+};
+
+export type Person = {
+  slug: string;
+  name: string;
+  kind: 'journalist' | 'official' | 'org' | 'figure';
+  role: string;
+  bio: string;
+  expertise: string[];
+  email?: string;
+  photoUrl?: string;
+};
+
+export type Correction = {
+  id: string;
+  articleSlug: string;
+  articleTitle: string;
+  reason: string;
+  correctedAt: string;
+};
