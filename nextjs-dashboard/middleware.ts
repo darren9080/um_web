@@ -70,16 +70,29 @@ export default auth((req: AuthedRequest) => {
     return NextResponse.rewrite(new URL(internalPath, nextUrl));
   }
 
-  // ── tv.iusm.co.kr — UTV 영상 (Phase 2 전 임시 리다이렉트) ──────────────
-  if (subdomain === 'tv') {
-    return NextResponse.redirect(new URL('/news', `https://iusm.co.kr`), 302);
+  // ── marathon.iusm.co.kr — 울산매일마라톤 ────────────────────────────────
+  if (subdomain === 'marathon') {
+    // 신청·결제는 로그인 필요 (서브도메인 상대경로·물리경로 모두 대응)
+    const needsAuth = pathname.startsWith('/apply') || pathname.startsWith('/marathon/apply');
+    if (needsAuth && !isLoggedIn) {
+      const loginUrl = new URL('/login', nextUrl);
+      loginUrl.searchParams.set('callbackUrl', req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+    // 서브도메인 경로 → /marathon/* 물리 경로. 이미 /marathon 접두면 중복 방지.
+    const internalPath =
+      pathname === '/' ? '/marathon'
+      : pathname.startsWith('/marathon') ? pathname
+      : `/marathon${pathname}`;
+    return NextResponse.rewrite(new URL(internalPath, nextUrl));
   }
 
   // ── 메인 사이트 기존 인증 로직 ───────────────────────────────────────────
   const isCheckout = pathname.startsWith('/membership/checkout');
   const isAdmin = pathname.startsWith('/admin');
   const isMy = pathname.startsWith('/my');
-  if ((isCheckout || isAdmin || isMy) && !isLoggedIn) {
+  const isMarathonApply = pathname.startsWith('/marathon/apply');
+  if ((isCheckout || isAdmin || isMy || isMarathonApply) && !isLoggedIn) {
     const loginUrl = new URL('/login', nextUrl);
     loginUrl.searchParams.set('callbackUrl', req.url);
     return NextResponse.redirect(loginUrl);
