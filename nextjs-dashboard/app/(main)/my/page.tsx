@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { formatDateKo } from '@/app/lib/utils';
+import { COURSE_LABELS, type CourseType } from '@/app/lib/marathon-data';
 
 export const metadata: Metadata = { title: '마이페이지' };
 
@@ -18,16 +19,26 @@ export default async function MyPage() {
   const session = await auth();
   if (!session?.user) redirect('/login?callbackUrl=/my');
 
-  // 이메일 기준으로 신청 내역 조회
+  // 이메일 기준으로 신청 내역 조회 (이벤트 + 마라톤 병렬)
   const supabase = getSupabaseAdmin();
-  const { data: registrations } = await supabase
-    .from('event_registrations')
-    .select('*')
-    .eq('email', session.user.email ?? '')
-    .order('created_at', { ascending: false })
-    .limit(20);
+  const email = session.user.email ?? '';
+  const [{ data: registrations }, { data: marathonRegs }] = await Promise.all([
+    supabase
+      .from('event_registrations')
+      .select('*')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+      .limit(20),
+    supabase
+      .from('marathon_registrations')
+      .select('*')
+      .eq('email', email)
+      .order('created_at', { ascending: false })
+      .limit(20),
+  ]);
 
   const list = registrations ?? [];
+  const marathonList = marathonRegs ?? [];
 
   return (
     <div className="container-main py-10 lg:py-14 max-w-2xl mx-auto">
@@ -106,6 +117,43 @@ export default async function MyPage() {
           </div>
         )}
       </section>
+
+      {/* 마라톤 신청 내역 */}
+      {marathonList.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-heading-3 font-bold text-neutral-900 mb-5">
+            마라톤 신청 내역
+            <span className="ml-2 text-body-sm font-normal text-neutral-400">{marathonList.length}건</span>
+          </h2>
+          <div className="space-y-3">
+            {marathonList.map((reg: Record<string, string | number>) => {
+              const status = STATUS_LABEL[reg.payment_status as string] ?? STATUS_LABEL.pending;
+              return (
+                <div key={reg.id as string} className="bg-white border border-neutral-200 rounded-2xl p-5">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <h3 className="text-body font-semibold text-neutral-900 leading-snug">
+                      {reg.year as number}년 울산매일마라톤 · {COURSE_LABELS[reg.course as CourseType] ?? (reg.course as string)}
+                    </h3>
+                    <span className={`shrink-0 text-caption font-semibold px-2.5 py-1 rounded-full ${status.color}`}>
+                      {status.label}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-neutral-500">
+                    <span>참가자 {reg.name as string}</span>
+                    {reg.bib ? <span>배번 {reg.bib as string}</span> : <span className="text-neutral-400">배번 배정 예정</span>}
+                    {(reg.total_amount as number) > 0 && (
+                      <span className="font-semibold text-primary">{(reg.total_amount as number).toLocaleString()}원</span>
+                    )}
+                  </div>
+                  <p className="text-caption text-neutral-400 mt-2">
+                    신청일 {new Date(reg.created_at as string).toLocaleDateString('ko-KR')}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

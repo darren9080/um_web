@@ -6,14 +6,27 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    setError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitted(true);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'web' }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? '구독 처리에 실패했습니다'); return; }
+      setSubmitted(true);
+    } catch {
+      setError('네트워크 오류가 발생했습니다');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,6 +70,10 @@ export default function NewsletterSignup() {
               {loading ? '처리 중...' : '구독하기'}
             </button>
           </form>
+        )}
+
+        {error && !submitted && (
+          <p className="text-caption text-red-300 mt-3">{error}</p>
         )}
 
         <p className="text-caption text-neutral-500 mt-4">
