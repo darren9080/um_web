@@ -1,8 +1,10 @@
 import '@/app/ui/global.css';
+import Script from 'next/script';
 import { inter, notoSerifKR, notoSansKR } from '@/app/ui/fonts';
 import { Providers } from '@/app/providers';
 import type { Metadata } from 'next';
 import { SITE_URL, SITE_NAME } from '@/app/lib/site-config';
+import { ADSENSE_CLIENT } from '@/app/lib/ads';
 
 const OG_IMAGE = `${SITE_URL}/opengraph-image.png`;
 
@@ -65,6 +67,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" className={`${inter.variable} ${notoSerifKR.variable} ${notoSansKR.variable}`}>
       <body className="antialiased">
+        {ADSENSE_CLIENT && (
+          <Script
+            id="adsbygoogle-init"
+            async
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        )}
         <Providers>{children}</Providers>
       </body>
     </html>

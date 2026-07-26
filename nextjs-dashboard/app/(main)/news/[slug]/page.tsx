@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import sanitizeHtml from 'sanitize-html';
 import CommentSection from '@/app/ui/iusm/comment-section';
-import AdSlotServer from '@/app/ui/iusm/ad-slot-server';
+import AdSense from '@/app/ui/iusm/adsense';
+import { ADSENSE_SLOTS } from '@/app/lib/ads';
 import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
@@ -232,9 +233,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content, SANITIZE_OPTIONS) }}
           />
 
-          {/* 기사 본문 하단 광고 */}
+          {/* 기사 본문 하단 광고 (AdSense 인아티클) */}
           <div className="mt-8">
-            <AdSlotServer placement="article_inline" />
+            <AdSense slot={ADSENSE_SLOTS.articleInline} format="in-article" />
           </div>
 
           {/* 태그 */}
