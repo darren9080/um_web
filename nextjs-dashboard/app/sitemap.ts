@@ -4,9 +4,11 @@ import { DATASETS } from '@/app/lib/datasets-data';
 import { TOPICS } from '@/app/lib/topics-data';
 import { JOURNALISTS } from '@/app/lib/journalists-data';
 import { MARATHON_RACES, COMMUNITY_POSTS } from '@/app/lib/marathon-data';
+import { EVENT_BRANDS } from '@/app/lib/event-brands';
 import { SITE_URL } from '@/app/lib/site-config';
 
 const MARATHON_URL = SITE_URL.replace('://', '://marathon.');
+const brandUrl = (slug: string) => SITE_URL.replace('://', `://${slug}.`);
 
 // '2025-Q1', '2024' 등 파싱 불가 값 대비 안전 파서
 function safeDate(value: string, fallback: Date): Date {
@@ -86,6 +88,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
+  // 이벤트 브랜드 서브도메인 (academy·jazz·award ...)
+  const brandPages: MetadataRoute.Sitemap = EVENT_BRANDS.map((b) => ({
+    url: `${brandUrl(b.slug)}/brands/${b.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
   return [
     ...staticPages,
     ...articlePages,
@@ -94,5 +104,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...topicPages,
     ...peoplePages,
     ...marathonPages,
+    ...brandPages,
   ];
 }

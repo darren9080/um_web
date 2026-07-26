@@ -2,6 +2,11 @@ import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { authConfig } from './auth.config';
+import { BRAND_SLUGS } from './app/lib/event-brands';
+
+// 브랜드 서브도메인에서 메인 사이트로 돌려보낼 공통 경로
+const MAIN_SITE_PREFIXES = ['/events', '/news', '/membership', '/my', '/login', '/data', '/topics', '/search', '/journalists', '/people', '/api'];
+const ROOT_ORIGIN = 'https://iusm.co.kr';
 
 const { auth } = NextAuth(authConfig);
 
@@ -84,6 +89,20 @@ export default auth((req: AuthedRequest) => {
       pathname === '/' ? '/marathon'
       : pathname.startsWith('/marathon') ? pathname
       : `/marathon${pathname}`;
+    return NextResponse.rewrite(new URL(internalPath, nextUrl));
+  }
+
+  // ── 이벤트 브랜드 서브도메인 (academy·jazz·award ...) ───────────────────
+  if (subdomain && BRAND_SLUGS.has(subdomain)) {
+    // 신청·결제 등 공통 기능은 메인 도메인으로 이동 (결제·회원 시스템 공유)
+    if (MAIN_SITE_PREFIXES.some((p) => pathname.startsWith(p))) {
+      return NextResponse.redirect(new URL(pathname + nextUrl.search, ROOT_ORIGIN));
+    }
+    // 서브도메인 경로 → /brands/[brand]/* 물리 경로. 중복 접두 방지.
+    const internalPath =
+      pathname === '/' ? `/brands/${subdomain}`
+      : pathname.startsWith('/brands') ? pathname
+      : `/brands/${subdomain}${pathname}`;
     return NextResponse.rewrite(new URL(internalPath, nextUrl));
   }
 
