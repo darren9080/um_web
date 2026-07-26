@@ -7,6 +7,7 @@ import BreakingTicker from '@/app/ui/iusm/breaking-ticker';
 import HeroCarousel from '@/app/ui/iusm/hero-carousel';
 import NewsletterSignup from '@/app/ui/iusm/newsletter-signup';
 import AdSlotServer from '@/app/ui/iusm/ad-slot-server';
+import AdRowServer from '@/app/ui/iusm/ad-row-server';
 import {
   PLACEHOLDER_ARTICLES,
   PLACEHOLDER_EVENTS,
@@ -110,9 +111,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 메인 빌보드 광고 */}
+      {/* 메인 광고 (3분할, 모바일 세로 스택) */}
       <div className="container-main mt-6">
-        <AdSlotServer placement="main" />
+        <AdRowServer placement="main" />
       </div>
 
       {/* 최신 기사 그리드 */}
@@ -132,9 +133,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 리더보드 광고 */}
+      {/* 리더보드 광고 (3분할, 모바일 세로 스택) */}
       <div className="container-main mb-8">
-        <AdSlotServer placement="top" />
+        <AdRowServer placement="top" />
       </div>
 
       {/* 다가오는 이벤트 */}
