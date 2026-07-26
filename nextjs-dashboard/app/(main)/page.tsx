@@ -6,6 +6,7 @@ import EventCard from '@/app/ui/iusm/event-card';
 import BreakingTicker from '@/app/ui/iusm/breaking-ticker';
 import HeroCarousel from '@/app/ui/iusm/hero-carousel';
 import NewsletterSignup from '@/app/ui/iusm/newsletter-signup';
+import AdSlotServer from '@/app/ui/iusm/ad-slot-server';
 import {
   PLACEHOLDER_ARTICLES,
   PLACEHOLDER_EVENTS,
@@ -109,11 +110,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 배너 광고 */}
+      {/* 메인 빌보드 광고 */}
       <div className="container-main mt-6">
-        <div className="h-24 rounded-xl bg-neutral-100 border border-dashed border-neutral-300 flex items-center justify-center">
-          <span className="text-body-sm text-neutral-400">광고 영역 (728×90)</span>
-        </div>
+        <AdSlotServer placement="main" />
       </div>
 
       {/* 최신 기사 그리드 */}
@@ -133,11 +132,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 스폰서 배너 (플레이스홀더) */}
+      {/* 리더보드 광고 */}
       <div className="container-main mb-8">
-        <div className="h-24 rounded-xl bg-neutral-100 border border-dashed border-neutral-300 flex items-center justify-center">
-          <span className="text-body-sm text-neutral-400">광고 영역 (728×90)</span>
-        </div>
+        <AdSlotServer placement="top" />
       </div>
 
       {/* 다가오는 이벤트 */}
@@ -194,6 +191,9 @@ export default function HomePage() {
                 구독 플랜 보기
               </Link>
             </div>
+
+            {/* 사이드바 광고 */}
+            <AdSlotServer placement="sidebar" className="mb-6" />
 
             {/* 이벤트 위젯 */}
             <div>

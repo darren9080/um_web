@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import sanitizeHtml from 'sanitize-html';
 import CommentSection from '@/app/ui/iusm/comment-section';
+import AdSlotServer from '@/app/ui/iusm/ad-slot-server';
 import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
@@ -230,6 +231,11 @@ export default async function ArticlePage({ params }: { params: Params }) {
             className="article-prose"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content, SANITIZE_OPTIONS) }}
           />
+
+          {/* 기사 본문 하단 광고 */}
+          <div className="mt-8">
+            <AdSlotServer placement="article_inline" />
+          </div>
 
           {/* 태그 */}
           {article.tags.length > 0 && (
