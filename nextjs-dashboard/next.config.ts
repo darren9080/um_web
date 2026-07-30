@@ -13,7 +13,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.tosspayments.com https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://images.unsplash.com https://lh3.googleusercontent.com https://phinf.pstatic.net https://ssl.pstatic.net https://k.kakaocdn.net",
+      "img-src 'self' data: blob: https://images.unsplash.com https://lh3.googleusercontent.com https://phinf.pstatic.net https://ssl.pstatic.net https://k.kakaocdn.net https://*.supabase.co",
       "connect-src 'self' https://api.tosspayments.com https://*.supabase.co wss://*.supabase.co",
       "frame-src https://js.tosspayments.com https://www.youtube.com https://player.vimeo.com",
       "object-src 'none'",
@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
       // NSP/ND소프트 CMS CDN (RSS 이미지)
       { protocol: 'https', hostname: '*.iusm.co.kr', pathname: '/**' },
       { protocol: 'https', hostname: '*.ulsan.co.kr', pathname: '/**' },
+      // Supabase Storage (배너 이미지 업로드)
+      { protocol: 'https', hostname: '*.supabase.co', pathname: '/storage/v1/object/public/**' },
     ],
   },
   async redirects() {
