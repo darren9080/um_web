@@ -4,22 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { requirePermission, getCurrentProfileId } from '@/app/lib/actions/guard';
 import { generateProofreadSuggestions, type ProofreadResult } from '@/app/lib/cms/ai';
+import { slugifyArticleTitle } from '@/app/lib/cms/slug';
 import type { ArticleStatus } from '@/app/lib/cms/definitions';
-
-function slugify(title: string) {
-  const base = title
-    .trim()
-    .toLowerCase()
-    .replace(/[^\w가-힣]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return base || `article-${Date.now()}`;
-}
 
 function parseArticleFormData(formData: FormData) {
   const title = (formData.get('title') as string) ?? '';
   return {
     title,
-    slug: (formData.get('slug') as string) || slugify(title),
+    slug: (formData.get('slug') as string) || slugifyArticleTitle(title),
     summary: (formData.get('summary') as string) || '',
     body: (formData.get('body') as string) || '',
     section: (formData.get('section') as string) || '',

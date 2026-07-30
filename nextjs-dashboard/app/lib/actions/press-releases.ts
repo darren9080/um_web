@@ -4,15 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { requirePermission, getCurrentProfileId } from '@/app/lib/actions/guard';
 import { createEmbedding, generateArticleDraft, measurePressReleaseSimilarity } from '@/app/lib/cms/ai';
-
-function slugify(title: string) {
-  const base = title
-    .trim()
-    .toLowerCase()
-    .replace(/[^\w가-힣]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return base || `article-${Date.now()}`;
-}
+import { slugifyArticleTitle } from '@/app/lib/cms/slug';
 
 // 1차 스코프: 텍스트 붙여넣기/.txt만 지원한다. PDF/DOCX 파싱은 별도
 // 라이브러리(pdf-parse, mammoth)가 필요해 이번 Phase 범위 밖이다.
@@ -75,7 +67,7 @@ export async function generateDraftFromPressRelease(pressReleaseId: string, sect
     .from('articles')
     .insert({
       title: draft.title,
-      slug: slugify(draft.title),
+      slug: slugifyArticleTitle(draft.title),
       summary: draft.dek,
       body: draft.body,
       section,

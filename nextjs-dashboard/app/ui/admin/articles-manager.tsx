@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   CheckCircleIcon,
   DocumentArrowUpIcon,
@@ -29,6 +30,7 @@ interface ArticlesManagerProps {
 }
 
 export default function ArticlesManager({ initialArticles, initialPressReleases }: ArticlesManagerProps) {
+  const router = useRouter();
   const [articles, setArticles] = useState(initialArticles);
   const [pressReleases, setPressReleases] = useState(initialPressReleases);
   const [selectedPressReleaseId, setSelectedPressReleaseId] = useState<string>(
@@ -72,10 +74,7 @@ export default function ArticlesManager({ initialArticles, initialPressReleases 
     startTransition(async () => {
       try {
         await generateDraftFromPressRelease(selectedPressReleaseId, section);
-        // 목록은 revalidatePath로 서버에서 갱신되지만, 같은 화면 안에서 즉시
-        // 보이도록 페이지를 새로고침하지 않는 한 로컬 상태 갱신은 어렵다 —
-        // Next.js router refresh로 서버 컴포넌트를 재실행한다.
-        window.location.reload();
+        router.refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : '초안 생성 중 오류가 발생했습니다.');
       }
