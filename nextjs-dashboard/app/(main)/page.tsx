@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ArticleCard from '@/app/ui/iusm/article-card';
@@ -96,7 +95,7 @@ export default function HomePage() {
           {/* 사이드 최신 기사 목록 */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-heading-4 font-bold text-neutral-900">최신 기사</h2>
+              <h2 className="text-heading-3 font-bold text-neutral-900">최신 기사</h2>
               <Link href="/news" className="text-caption text-accent-event hover:underline font-semibold">
                 전체 보기 →
               </Link>
@@ -117,7 +116,7 @@ export default function HomePage() {
         <AdSenseRow slots={ADSENSE_SLOTS.homeMain} />
       </div>
 
-      {/* 최신 기사 그리드 */}
+      {/* 주요 기사 그리드 */}
       <section className="container-main section-gap">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-heading-2 font-bold text-neutral-900">
@@ -133,11 +132,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* 리더보드 광고 (AdSense 3분할, 모바일 세로 스택) */}
-      <div className="container-main mb-8">
-        <AdSenseRow slots={ADSENSE_SLOTS.homeTop} />
-      </div>
 
       {/* 다가오는 이벤트 */}
       <section className="bg-neutral-50 border-y border-neutral-200 py-12">
@@ -178,54 +172,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* 사이드바 */}
+          {/* 사이드바 — 멤버십 CTA(헤더에 상시 노출)와 이벤트(위 배너와 중복)는 제거해
+              동일한 유도/정보를 페이지 내 반복 노출하지 않도록 함 */}
           <aside className="hidden lg:block">
-            {/* 멤버십 CTA */}
-            <div className="bg-primary rounded-2xl p-6 text-white mb-6">
-              <p className="text-caption font-semibold tracking-widest text-neutral-400 uppercase mb-2">멤버십</p>
-              <h3 className="text-heading-3 font-bold mb-3">
-                IUSM 구독으로<br />더 깊게 읽으세요
-              </h3>
-              <p className="text-body-sm text-neutral-400 mb-5 leading-relaxed">
-                프리미엄 기사, 이벤트 우선 신청권, 매주 뉴스레터까지.
-              </p>
-              <Link href="/membership" className="block text-center bg-white text-primary font-semibold text-body-sm py-3 rounded-xl hover:bg-neutral-100 transition-colors">
-                구독 플랜 보기
-              </Link>
-            </div>
-
-            {/* 사이드바 광고 (AdSense) */}
-            <AdSense slot={ADSENSE_SLOTS.sidebar} format="rectangle" className="mb-6" />
-
-            {/* 이벤트 위젯 */}
-            <div>
-              <h3 className="text-heading-4 font-bold text-neutral-900 mb-4">이번 주 이벤트</h3>
-              <div className="space-y-4">
-                {PLACEHOLDER_EVENTS.filter((e) => e.status === 'upcoming').slice(0, 3).map((event) => (
-                  <Link
-                    key={event.id}
-                    href={`/events/${event.slug}`}
-                    className="group flex gap-3 hover:bg-neutral-50 rounded-lg p-2 -mx-2 transition-colors"
-                  >
-                    <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-neutral-100">
-                      <Image
-                        src={event.thumbnail}
-                        alt={event.title}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-body-sm font-semibold text-neutral-800 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
-                        {event.title}
-                      </p>
-                      <p className="text-caption text-neutral-400 mt-1">{event.location}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <AdSense slot={ADSENSE_SLOTS.sidebar} format="rectangle" />
           </aside>
         </div>
       </section>
