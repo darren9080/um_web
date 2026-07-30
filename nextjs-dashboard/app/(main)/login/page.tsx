@@ -92,11 +92,11 @@ export default async function LoginPage({
         {/* 안내 문구 */}
         <p className="mt-8 text-center text-caption text-neutral-400 leading-relaxed">
           로그인 시{' '}
-          <Link href="/about" className="underline hover:text-neutral-600">
+          <Link href="/terms" className="underline hover:text-neutral-600">
             이용약관
           </Link>{' '}
           및{' '}
-          <Link href="/about" className="underline hover:text-neutral-600">
+          <Link href="/privacy" className="underline hover:text-neutral-600">
             개인정보처리방침
           </Link>
           에 동의하는 것으로 간주됩니다.
