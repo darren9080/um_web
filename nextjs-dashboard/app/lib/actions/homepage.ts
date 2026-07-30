@@ -2,8 +2,10 @@
 
 import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
+import { requirePermission } from '@/app/lib/actions/guard';
 
 export async function reorderSlots(slots: { id: string; position: number }[]) {
+  await requirePermission('homepage.manage');
   const supabase = getSupabaseAdmin();
 
   const updates = slots.map(({ id, position }) =>
@@ -26,6 +28,7 @@ export async function reorderSlots(slots: { id: string; position: number }[]) {
 }
 
 export async function toggleSlotVisibility(id: string, isVisible: boolean) {
+  await requirePermission('homepage.manage');
   const supabase = getSupabaseAdmin();
 
   const { error } = await supabase

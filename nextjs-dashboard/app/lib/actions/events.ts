@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
+import { requirePermission } from '@/app/lib/actions/guard';
 
 function parseEventFormData(formData: FormData) {
   return {
@@ -20,6 +21,7 @@ function parseEventFormData(formData: FormData) {
 }
 
 export async function createEvent(formData: FormData) {
+  await requirePermission('events.manage');
   const data = parseEventFormData(formData);
 
   if (!data.title || !data.event_at) {
@@ -37,6 +39,7 @@ export async function createEvent(formData: FormData) {
 }
 
 export async function updateEvent(id: string, formData: FormData) {
+  await requirePermission('events.manage');
   const data = parseEventFormData(formData);
 
   if (!data.title || !data.event_at) {
@@ -57,6 +60,7 @@ export async function updateEvent(id: string, formData: FormData) {
 }
 
 export async function deleteEvent(id: string) {
+  await requirePermission('events.manage');
   const { error } = await getSupabaseAdmin().from('editorial_events').delete().eq('id', id);
 
   if (error) {
