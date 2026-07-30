@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import sanitizeHtml from 'sanitize-html';
 import CommentSection from '@/app/ui/iusm/comment-section';
+import ShareActions from '@/app/ui/iusm/share-actions';
 import AdSense from '@/app/ui/iusm/adsense';
 import { ADSENSE_SLOTS } from '@/app/lib/ads';
 import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
@@ -200,18 +201,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
               </div>
 
               {/* 공유 버튼 */}
-              <div className="flex items-center gap-2">
-                <button className="p-2 rounded-full text-neutral-400 hover:text-primary hover:bg-neutral-100 transition-colors" aria-label="카카오 공유">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M12 3C6.477 3 2 6.582 2 11c0 2.797 1.693 5.265 4.285 6.79L5.18 21.15a.25.25 0 00.362.28l4.04-2.61A11.06 11.06 0 0012 19c5.523 0 10-3.582 10-8s-4.477-8-10-8z" />
-                  </svg>
-                </button>
-                <button className="p-2 rounded-full text-neutral-400 hover:text-primary hover:bg-neutral-100 transition-colors" aria-label="링크 복사">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
-                </button>
-              </div>
+              <ShareActions url={`${SITE_URL}/news/${article.slug}`} title={article.title} />
             </div>
           </header>
 

@@ -58,7 +58,7 @@ function CommentItem({
   const isOwner = currentUserId === comment.user_id;
 
   return (
-    <div className="group">
+    <div>
       <div className="flex gap-3">
         <Avatar name={comment.user_name} image={comment.user_image} />
         <div className="flex-1 min-w-0">
@@ -72,7 +72,7 @@ function CommentItem({
             {comment.content}
           </p>
           {!isDeleted && (
-            <div className="flex items-center gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-3 mt-2">
               <button
                 onClick={() => onReply(comment.id, comment.user_name)}
                 className="text-caption text-neutral-400 hover:text-primary transition-colors"
