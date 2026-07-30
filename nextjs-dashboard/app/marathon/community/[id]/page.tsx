@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import {
   COMMUNITY_POSTS, getPostById, POST_CATEGORY_LABELS, POST_CATEGORY_COLORS,
 } from '@/app/lib/marathon-data';
+import LikeButton from './like-button';
 
 type Params = Promise<{ id: string }>;
 
@@ -79,9 +80,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
 
         {/* 추천 버튼 */}
         <div className="flex justify-center my-8">
-          <button className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-brand-red text-brand-red font-bold hover:bg-brand-red hover:text-white transition-colors">
-            👍 추천 {post.likes}
-          </button>
+          <LikeButton postId={post.id} initialLikes={post.likes} />
         </div>
 
         {/* 댓글 (기존 댓글 시스템 재사용 예정 안내) */}

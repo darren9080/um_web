@@ -73,7 +73,7 @@ export default async function BrandLayout({
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-6 text-caption text-white/40">
-            © {2026} 울산매일신문사. All rights reserved.
+            © {new Date().getFullYear()} 울산매일신문사. All rights reserved.
           </div>
         </div>
       </footer>
