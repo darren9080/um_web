@@ -4,7 +4,12 @@ import { revalidatePath } from 'next/cache';
 import { getSupabaseAdmin } from '@/app/lib/supabase';
 import { requirePermission, getCurrentProfileId } from '@/app/lib/actions/guard';
 
-const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+};
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
 
 function parseBannerFormData(formData: FormData) {
@@ -28,14 +33,16 @@ export async function uploadBannerImage(formData: FormData) {
   if (!file || file.size === 0) {
     throw new Error('이미지 파일을 선택해주세요.');
   }
-  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+  const ext = ALLOWED_IMAGE_TYPES[file.type];
+  if (!ext) {
     throw new Error('JPEG, PNG, WEBP, GIF 형식만 업로드할 수 있습니다.');
   }
   if (file.size > MAX_IMAGE_BYTES) {
     throw new Error('이미지 크기는 5MB를 초과할 수 없습니다.');
   }
 
-  const ext = file.name.split('.').pop() || 'bin';
+  // 확장자는 검증된 MIME 타입에서 도출한다 — 사용자가 보낸 file.name은
+  // 신뢰 경계 밖의 값이라 그대로 쓰면 임의 문자열이 스토리지 경로에 들어간다.
   const path = `${crypto.randomUUID()}.${ext}`;
 
   const { error } = await getSupabaseAdmin()
