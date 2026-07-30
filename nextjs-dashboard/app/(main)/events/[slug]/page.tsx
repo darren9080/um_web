@@ -6,6 +6,7 @@ import { PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
 import { EVENT_TYPE_LABELS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import { SITE_URL, SITE_NAME } from '@/app/lib/site-config';
+import ShareActions from '@/app/ui/iusm/share-actions';
 
 type Params = Promise<{ slug: string }>;
 
@@ -279,9 +280,12 @@ export default async function EventPage({ params }: { params: Params }) {
                 )}
 
                 {/* 공유 */}
-                <div className="mt-4 flex gap-2">
-                  <button className="flex-1 btn-outline py-2.5 text-xs">카카오 공유</button>
-                  <button className="flex-1 btn-outline py-2.5 text-xs">링크 복사</button>
+                <div className="mt-4">
+                  <ShareActions
+                    url={`${SITE_URL}/events/${event.slug}`}
+                    title={event.title}
+                    variant="button"
+                  />
                 </div>
               </div>
             </div>

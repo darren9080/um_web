@@ -21,12 +21,16 @@ export default async function EventsPage({ searchParams }: { searchParams: Searc
   const params = await searchParams;
   const activeStatus = params.status as EventStatus | 'all' | undefined;
 
-  const filtered =
-    !activeStatus || activeStatus === 'all'
-      ? PLACEHOLDER_EVENTS
-      : PLACEHOLDER_EVENTS.filter((e) => e.status === activeStatus);
-
+  const isDefaultView = !activeStatus || activeStatus === 'all';
   const featured = PLACEHOLDER_EVENTS.filter((e) => e.featured && e.status === 'upcoming');
+  const featuredIds = new Set(featured.map((e) => e.id));
+
+  // 기본(전체) 화면에서는 주요 이벤트 배너에 이미 나온 이벤트를 아래 그리드에서
+  // 다시 보여주지 않는다. 특정 상태로 필터링한 경우 배너 자체가 숨겨지므로
+  // (아래 조건 참고) 제외할 필요가 없다.
+  const filtered = isDefaultView
+    ? PLACEHOLDER_EVENTS.filter((e) => !featuredIds.has(e.id))
+    : PLACEHOLDER_EVENTS.filter((e) => e.status === activeStatus);
 
   return (
     <div className="container-main py-8">

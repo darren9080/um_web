@@ -5,9 +5,11 @@ import { useState } from 'react';
 interface Props {
   url: string;
   title: string;
+  /** 'icon' — small circular icon buttons (article header). 'button' — full-width labeled buttons (sidebar widgets). */
+  variant?: 'icon' | 'button';
 }
 
-export default function ShareActions({ url, title }: Props) {
+export default function ShareActions({ url, title, variant = 'icon' }: Props) {
   const [copied, setCopied] = useState(false);
 
   async function copyLink() {
@@ -35,6 +37,19 @@ export default function ShareActions({ url, title }: Props) {
       return;
     }
     copyLink();
+  }
+
+  if (variant === 'button') {
+    return (
+      <div className="flex gap-2">
+        <button onClick={share} className="flex-1 btn-outline py-2.5 text-xs">
+          공유하기
+        </button>
+        <button onClick={copyLink} className="flex-1 btn-outline py-2.5 text-xs">
+          {copied ? '복사됨 ✓' : '링크 복사'}
+        </button>
+      </div>
+    );
   }
 
   return (
