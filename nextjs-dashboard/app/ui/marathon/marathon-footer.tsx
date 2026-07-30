@@ -37,7 +37,7 @@ export default function MarathonFooter() {
         </div>
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between gap-2 text-caption text-white/40">
-          <p>© {2026} 울산매일신문사. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} 울산매일신문사. All rights reserved.</p>
           <p>주최 (주)울산매일신문사 · 후원 울산광역시</p>
         </div>
       </div>
