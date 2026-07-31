@@ -8,11 +8,8 @@ import NewsletterSignup from '@/app/ui/iusm/newsletter-signup';
 import AdSense from '@/app/ui/iusm/adsense';
 import AdSenseRow from '@/app/ui/iusm/adsense-row';
 import { ADSENSE_SLOTS } from '@/app/lib/ads';
-import {
-  PLACEHOLDER_ARTICLES,
-  PLACEHOLDER_EVENTS,
-  BREAKING_NEWS,
-} from '@/app/lib/placeholder-data';
+import { PLACEHOLDER_EVENTS, BREAKING_NEWS } from '@/app/lib/placeholder-data';
+import { getArticles } from '@/app/lib/synced-articles';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatRelativeTime } from '@/app/lib/utils';
 import { SITE_URL, SITE_NAME, ORG_NAME, ORG_PHONE, ORG_FOUNDING_YEAR } from '@/app/lib/site-config';
@@ -22,10 +19,11 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
 };
 
-export default function HomePage() {
-  const carouselArticles = PLACEHOLDER_ARTICLES.slice(0, 3);
+export default async function HomePage() {
+  const articles = await getArticles();
+  const carouselArticles = articles.slice(0, 3);
   const carouselIds = new Set(carouselArticles.map((a) => a.id));
-  const latestArticles = PLACEHOLDER_ARTICLES.filter((a) => !carouselIds.has(a.id)).slice(0, 3);
+  const latestArticles = articles.filter((a) => !carouselIds.has(a.id)).slice(0, 3);
   const upcomingEvents = PLACEHOLDER_EVENTS.filter((e) => e.status === 'upcoming').slice(0, 4);
 
   const orgSchema = {
@@ -127,7 +125,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PLACEHOLDER_ARTICLES.slice(0, 3).map((article) => (
+          {articles.slice(0, 3).map((article) => (
             <ArticleCard key={article.id} article={article} variant="compact" />
           ))}
         </div>
@@ -164,7 +162,7 @@ export default function HomePage() {
               <h2 className="text-heading-2 font-bold text-neutral-900">더 많은 기사</h2>
             </div>
             <div className="divide-y divide-neutral-100">
-              {PLACEHOLDER_ARTICLES.slice(3).map((article) => (
+              {articles.slice(3).map((article) => (
                 <div key={article.id} className="py-5 first:pt-0">
                   <ArticleCard article={article} variant="horizontal" />
                 </div>

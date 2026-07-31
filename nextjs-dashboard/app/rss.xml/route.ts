@@ -1,7 +1,7 @@
-import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
+import { getArticles } from '@/app/lib/synced-articles';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
+import { SITE_URL } from '@/app/lib/site-config';
 
-const SITE_URL = 'https://iusm.co.kr';
 const SITE_TITLE = 'IUSM';
 const SITE_DESCRIPTION = '사회·문화·인문·스포츠 미디어 플랫폼';
 
@@ -11,7 +11,7 @@ function rfc822Date(dateStr: string): string {
 }
 
 export async function GET() {
-  const articles = PLACEHOLDER_ARTICLES;
+  const articles = await getArticles();
   const lastBuildDate = rfc822Date(articles[0]?.publishedAt ?? new Date().toISOString());
 
   const items = articles
