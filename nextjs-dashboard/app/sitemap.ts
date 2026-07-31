@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
-import { PLACEHOLDER_ARTICLES, PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
+import { PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
+import { getArticles } from '@/app/lib/synced-articles';
 import { DATASETS } from '@/app/lib/datasets-data';
 import { TOPICS } from '@/app/lib/topics-data';
 import { JOURNALISTS } from '@/app/lib/journalists-data';
@@ -16,8 +17,9 @@ function safeDate(value: string, fallback: Date): Date {
   return isNaN(d.getTime()) ? fallback : d;
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const articles = await getArticles();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: now, changeFrequency: 'hourly', priority: 1 },
@@ -35,7 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  const articlePages: MetadataRoute.Sitemap = PLACEHOLDER_ARTICLES.map((article) => ({
+  const articlePages: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${SITE_URL}/news/${article.slug}`,
     lastModified: new Date(article.publishedAt),
     changeFrequency: 'weekly' as const,

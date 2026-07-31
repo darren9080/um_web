@@ -7,7 +7,7 @@ import CommentSection from '@/app/ui/iusm/comment-section';
 import ShareActions from '@/app/ui/iusm/share-actions';
 import AdSense from '@/app/ui/iusm/adsense';
 import { ADSENSE_SLOTS } from '@/app/lib/ads';
-import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
+import { getArticleBySlug, getArticles } from '@/app/lib/synced-articles';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import ArticleCard from '@/app/ui/iusm/article-card';
@@ -29,7 +29,7 @@ type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const article = PLACEHOLDER_ARTICLES.find((a) => a.slug === slug);
+  const article = await getArticleBySlug(slug);
   if (!article) return { title: '기사를 찾을 수 없습니다' };
   const canonicalUrl = `${SITE_URL}/news/${article.slug}`;
   return {
@@ -58,11 +58,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ArticlePage({ params }: { params: Params }) {
   const { slug } = await params;
-  const article = PLACEHOLDER_ARTICLES.find((a) => a.slug === slug);
+  const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
   const journalist = getJournalistByName(article.author);
-  const related = PLACEHOLDER_ARTICLES.filter(
+  const allArticles = await getArticles();
+  const related = allArticles.filter(
     (a) => a.id !== article.id && a.category === article.category,
   ).slice(0, 3);
 
@@ -217,11 +218,28 @@ export default async function ArticlePage({ params }: { params: Params }) {
             />
           </div>
 
-          {/* 본문 */}
-          <div
-            className="article-prose"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content, SANITIZE_OPTIONS) }}
-          />
+          {/* 본문 — RSS 미러링 기사는 본문 크롤링 전이라 content가 비어있을 수
+              있음(synced-articles.ts 참고). 그 경우 원문 링크로 대체한다. */}
+          {article.content ? (
+            <div
+              className="article-prose"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content, SANITIZE_OPTIONS) }}
+            />
+          ) : article.sourceUrl ? (
+            <div className="rounded-xl bg-neutral-50 border border-neutral-200 p-6 text-center">
+              <p className="text-body-sm text-neutral-600 mb-4">
+                전체 기사는 원문에서 확인하실 수 있습니다.
+              </p>
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-5 py-2.5 rounded-lg bg-brand-charcoal text-white text-body-sm font-semibold hover:bg-neutral-800 transition-colors"
+              >
+                원문 기사 보기 ↗
+              </a>
+            </div>
+          ) : null}
 
           {/* 기사 본문 하단 광고 (AdSense 인아티클) */}
           <div className="mt-8">

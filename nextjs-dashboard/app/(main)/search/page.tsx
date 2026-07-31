@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PLACEHOLDER_ARTICLES, PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
+import { PLACEHOLDER_EVENTS } from '@/app/lib/placeholder-data';
+import { getArticles } from '@/app/lib/synced-articles';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/app/lib/definitions';
 import { EVENT_TYPE_LABELS } from '@/app/lib/definitions';
+import type { Article } from '@/app/lib/definitions';
 import { formatDateKo } from '@/app/lib/utils';
 import ArticleCard from '@/app/ui/iusm/article-card';
 import { SITE_URL } from '@/app/lib/site-config';
@@ -18,9 +20,9 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   };
 }
 
-function searchArticles(query: string) {
+function searchArticles(articles: Article[], query: string) {
   const q = query.toLowerCase();
-  return PLACEHOLDER_ARTICLES.filter(
+  return articles.filter(
     (a) =>
       a.title.toLowerCase().includes(q) ||
       a.excerpt.toLowerCase().includes(q) ||
@@ -46,7 +48,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   const { q } = await searchParams;
   const query = (q ?? '').trim();
 
-  const articleResults = query ? searchArticles(query) : [];
+  const articles = query ? await getArticles() : [];
+  const articleResults = query ? searchArticles(articles, query) : [];
   const eventResults   = query ? searchEvents(query) : [];
   const total = articleResults.length + eventResults.length;
 

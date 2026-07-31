@@ -39,6 +39,9 @@ export type Article = {
   tags: string[];
   featured: boolean;
   premium: boolean;
+  /** RSS로 미러링된 기사는 본문(content)이 아직 비어 있을 수 있어, 원본 기사로
+   * 보내는 링크가 필요하다 (synced-articles.ts 참고). */
+  sourceUrl?: string;
 };
 
 export type EventStatus = 'upcoming' | 'ongoing' | 'ended';

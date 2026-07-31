@@ -1,15 +1,13 @@
-import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
-
-const SITE_URL = 'https://iusm.co.kr';
+import { getArticles } from '@/app/lib/synced-articles';
+import { SITE_URL } from '@/app/lib/site-config';
 
 // Google 뉴스 사이트맵: 최근 2일 이내 기사만 포함 (Google 정책)
 export async function GET() {
   const twoDaysAgo = new Date();
   twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-  // 실제 DB 연동 시 최근 2일 이내 기사만 쿼리
-  // 현재는 플레이스홀더 전체 포함
-  const articles = PLACEHOLDER_ARTICLES;
+  const allArticles = await getArticles();
+  const articles = allArticles.filter((a) => new Date(a.publishedAt) >= twoDaysAgo);
 
   const urls = articles
     .map((article) => {

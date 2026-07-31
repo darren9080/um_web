@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import NewsListView from '@/app/ui/iusm/news-list-view';
-import { PLACEHOLDER_ARTICLES } from '@/app/lib/placeholder-data';
+import { getArticles } from '@/app/lib/synced-articles';
 import { CATEGORY_LABELS } from '@/app/lib/definitions';
 import type { ArticleCategory } from '@/app/lib/definitions';
 
@@ -24,11 +24,12 @@ type SearchParams = Promise<{ category?: string }>;
 export default async function NewsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const activeCategory = params.category as ArticleCategory | 'all' | undefined;
+  const articles = await getArticles();
 
   const filtered =
     !activeCategory || activeCategory === 'all'
-      ? PLACEHOLDER_ARTICLES
-      : PLACEHOLDER_ARTICLES.filter((a) => a.category === activeCategory);
+      ? articles
+      : articles.filter((a) => a.category === activeCategory);
 
   return (
     <div className="container-main py-8">
