@@ -1,5 +1,6 @@
 import { auth } from '@/auth';
 import { can } from '@/app/lib/cms/permissions';
+import { getSupabaseAdmin } from '@/app/lib/supabase';
 import type { CmsPermission, CmsRole } from '@/app/lib/cms/definitions';
 
 // 서버 액션 진입점에서 호출하는 권한 가드. 미들웨어는 서브도메인 단위로만
@@ -16,4 +17,24 @@ export async function requirePermission(permission: CmsPermission) {
 
   // cms_profiles의 정체성 키는 email이다 (Phase 0: cms_profiles 마이그레이션 참고).
   return { role, userEmail: session?.user?.email ?? undefined };
+}
+
+// articles/press_releases 등 신규 테이블은 author_id/uploaded_by가
+// cms_profiles(id)를 참조한다. 로그인 시 auth.ts가 email로 cms_profiles를
+// upsert해두므로, email로 역조회해 현재 사용자의 프로필 id를 구한다.
+export async function getCurrentProfileId(email?: string): Promise<string | null> {
+  if (!email) return null;
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('cms_profiles')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+
+  if (error) {
+    console.warn('cms_profiles 조회 실패:', error.message);
+    return null;
+  }
+
+  return (data?.id as string | undefined) ?? null;
 }

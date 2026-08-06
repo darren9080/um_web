@@ -40,6 +40,8 @@ export type Article = {
   title: string;
   slug: string;
   summary: string;
+  /** 기사 본문. sample-data.ts의 목업 항목에는 없어 optional로 둔다. */
+  body?: string;
   section: string;
   desk: DeskType;
   status: ArticleStatus;
@@ -56,6 +58,14 @@ export type Article = {
   publishedAt?: string;
   updatedAt: string;
   heroImage?: string;
+};
+
+export type PressRelease = {
+  id: string;
+  title: string;
+  body: string;
+  source?: string;
+  createdAt: string;
 };
 
 export type Banner = {
